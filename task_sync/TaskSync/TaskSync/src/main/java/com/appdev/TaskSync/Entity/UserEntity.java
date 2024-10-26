@@ -30,17 +30,25 @@ public class UserEntity {
 	@Column(nullable=false)
 	private String occupation;
 	
-	@OneToMany(mappedBy="userId", cascade=CascadeType.ALL, fetch= FetchType.LAZY)
-	private List<Timer> timers;
+	@OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch= FetchType.LAZY)
+	private List<TimerEntity> timers;
 	
+	@OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch=FetchType.LAZY)	
+	private List<StickyNoteEntity> stickyNotes;
 
+	
+	
+	
 	public UserEntity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 	
+	
+	
+	
 	public UserEntity(int userId, String username, String email, String password, String occupation,
-			List<Timer> timers) {
+			List<TimerEntity> timers, List<StickyNoteEntity> stickyNotes) {
 		super();
 		this.userId = userId;
 		this.username = username;
@@ -48,13 +56,30 @@ public class UserEntity {
 		this.password = password;
 		this.occupation = occupation;
 		this.timers = timers;
+		this.stickyNotes = stickyNotes;
 	}
+
 	
-	
-	public List<Timer> getTimers() {
+
+
+	public List<StickyNoteEntity> getStickyNotes() {
+		return stickyNotes;
+	}
+
+
+
+
+	public void setStickyNotes(List<StickyNoteEntity> stickyNotes) {
+		this.stickyNotes = stickyNotes;
+	}
+
+
+
+
+	public List<TimerEntity> getTimers() {
 		return timers;
 	}
-	public void setTimers(List<Timer> timers) {
+	public void setTimers(List<TimerEntity> timers) {
 		this.timers = timers;
 	}
 	public int getUserId() {
