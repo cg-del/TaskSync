@@ -33,8 +33,8 @@ public class StickyNoteService {
 	public StickyNoteEntity putStickynoteDetails(int id, StickyNoteEntity newStickynoteDetails) {
 		StickyNoteEntity stickynote;
 		try {
-			// Search the stickynote by id
 			stickynote = stickynoteRepo.findById(id).get();
+			
 			stickynote.setContent(newStickynoteDetails.getContent());
 			stickynote.setColor(newStickynoteDetails.getColor());
 			stickynote.setUser(newStickynoteDetails.getUser());
