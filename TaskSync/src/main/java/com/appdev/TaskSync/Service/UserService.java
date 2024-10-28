@@ -36,7 +36,6 @@ public class UserService {
 		try {
 			user = urepo.findById(userId).get();
 			
-			user.setAdmin(newUserDetails.getAdmin());
 			user.setTimers(newUserDetails.getTimers());
 			user.setStickyNotes(newUserDetails.getStickyNotes());
 			user.setTasks(newUserDetails.getTasks());
