@@ -72,5 +72,4 @@ public class TaskEntity {
 	public void setCompleted(boolean isCompleted) {
 		this.isCompleted = isCompleted;
 	}
-
 }

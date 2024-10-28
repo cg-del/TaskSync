@@ -1,3 +1,4 @@
+
 package com.appdev.TaskSync.Entity;
 
 import jakarta.persistence.*;
@@ -18,6 +19,7 @@ public class StickyNoteEntity {
     private String content;
 
 
+
     // Constructors, getters, and setters
     public StickyNoteEntity() {
         super();
@@ -27,7 +29,7 @@ public class StickyNoteEntity {
         this.noteId = noteId;
         this.user = user;
         this.content = content;
-    }
+
 
     public int getNoteId() {
         return noteId;
@@ -43,6 +45,9 @@ public class StickyNoteEntity {
 
     public void setContent(String content) {
         this.content = content;
+    }
+    public String getColor() {
+        return color;
     }
 
 

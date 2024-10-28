@@ -26,6 +26,7 @@ public class DeadlineTaskEntity {
 	private String description;
 	@Column(nullable=false)
 	private LocalDateTime mark;
+
 	public DeadlineTaskEntity() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -37,6 +38,7 @@ public class DeadlineTaskEntity {
 		this.user = user;
 		this.description = description;
 		this.mark = mark;
+
 	}
 	public int getDeadlineTaskId() {
 		return deadlineTaskId;
