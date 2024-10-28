@@ -34,7 +34,6 @@ public class DeadlineTaskService {
 			deadlineTask.setUser(newDeadlineTaskDetails.getUser());
 			deadlineTask.setDescription(newDeadlineTaskDetails.getDescription());
 			deadlineTask.setMark(newDeadlineTaskDetails.getMark());
-			deadlineTask.setCompleted(newDeadlineTaskDetails.isCompleted());
 		} catch(NoSuchElementException nex) {
 			throw new NameNotFoundException("DeadlineTask " + id + " not found!");
 		} finally  {

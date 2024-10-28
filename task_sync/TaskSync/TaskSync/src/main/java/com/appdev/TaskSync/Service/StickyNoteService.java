@@ -36,7 +36,6 @@ public class StickyNoteService {
 			stickynote = stickynoteRepo.findById(id).get();
 			
 			stickynote.setContent(newStickynoteDetails.getContent());
-			stickynote.setColor(newStickynoteDetails.getColor());
 			stickynote.setUser(newStickynoteDetails.getUser());
 		} catch (NoSuchElementException nex) {
 			throw new RuntimeException("Stickynote " + id + " not found");

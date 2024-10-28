@@ -17,7 +17,6 @@ public class StickyNoteEntity {
     @Column(nullable = false)
     private String content;
 
-    private String color;
 
     // Constructors, getters, and setters
     public StickyNoteEntity() {
@@ -28,7 +27,6 @@ public class StickyNoteEntity {
         this.noteId = noteId;
         this.user = user;
         this.content = content;
-        this.color = color;
     }
 
     public int getNoteId() {
@@ -47,13 +45,6 @@ public class StickyNoteEntity {
         this.content = content;
     }
 
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
 
     public UserEntity getUser() {
         return user;
