@@ -1,7 +1,5 @@
 package com.appdev.TaskSync.Entity;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,28 +23,21 @@ public class TaskEntity {
 	private UserEntity user;
 	
 	@Column(nullable=false)
-	private String title;
-	
 	private String description;
 	
 	private boolean isCompleted;
-	
-	private LocalDateTime deadline;
 
 	public TaskEntity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public TaskEntity(int taskId, UserEntity user, String title, String description, boolean isCompleted,
-			LocalDateTime deadline) {
+	public TaskEntity(int taskId, UserEntity user, String description, boolean isCompleted) {
 		super();
 		this.taskId = taskId;
 		this.user = user;
-		this.title = title;
 		this.description = description;
 		this.isCompleted = isCompleted;
-		this.deadline = deadline;
 	}
 
 	public int getTaskId() {
@@ -65,13 +56,6 @@ public class TaskEntity {
 		this.user = user;
 	}
 
-	public String getTitle() {
-		return title;
-	}
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
 
 	public String getDescription() {
 		return description;
@@ -88,13 +72,4 @@ public class TaskEntity {
 	public void setCompleted(boolean isCompleted) {
 		this.isCompleted = isCompleted;
 	}
-
-	public LocalDateTime getDeadline() {
-		return deadline;
-	}
-
-	public void setDeadline(LocalDateTime deadline) {
-		this.deadline = deadline;
-	}
-	
 }

@@ -26,7 +26,7 @@ public class DeadlineTaskEntity {
 	private String description;
 	@Column(nullable=false)
 	private LocalDateTime mark;
-	private boolean isCompleted;
+
 	public DeadlineTaskEntity() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -38,7 +38,7 @@ public class DeadlineTaskEntity {
 		this.user = user;
 		this.description = description;
 		this.mark = mark;
-		this.isCompleted = isCompleted;
+
 	}
 	public int getDeadlineTaskId() {
 		return deadlineTaskId;
@@ -63,12 +63,6 @@ public class DeadlineTaskEntity {
 	}
 	public void setMark(LocalDateTime mark) {
 		this.mark = mark;
-	}
-	public boolean isCompleted() {
-		return isCompleted;
-	}
-	public void setCompleted(boolean isCompleted) {
-		this.isCompleted = isCompleted;
 	}
 	
 }

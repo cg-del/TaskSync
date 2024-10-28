@@ -35,10 +35,8 @@ public class TaskService {
 			task=trepo.findById(taskId).get();
 			
 			task.setUser(newTaskDetails.getUser());
-			task.setTitle(newTaskDetails.getTitle());
 			task.setDescription(newTaskDetails.getDescription());
 			task.setCompleted(newTaskDetails.isCompleted());
-			task.setDeadline(newTaskDetails.getDeadline());
 		}catch(NoSuchElementException nex) {
 			throw new NameNotFoundException("Task " + taskId + " not found!");
 		} finally {
