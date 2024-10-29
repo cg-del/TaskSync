@@ -3,6 +3,7 @@ package com.appdev.TaskSync.Controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,4 +40,19 @@ public class UserController {
 	public String deleteUser(@PathVariable int id) {
 		return userv.deleteUser(id);
 	}
+	@PostMapping("/signup")
+    public ResponseEntity<UserEntity> signup(@RequestBody UserEntity user) {
+        UserEntity newUser = userv.registerUser(user);
+        return ResponseEntity.ok(newUser);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserEntity> login(@RequestBody UserEntity user) {
+        UserEntity loggedInUser = userv.loginUser(user.getUsername(), user.getPassword());
+        if (loggedInUser != null) {
+            return ResponseEntity.ok(loggedInUser);
+        }
+        return ResponseEntity.status(401).body(null); // Unauthorized
+    }
+
 }

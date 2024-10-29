@@ -31,12 +31,8 @@ public class UserEntity {
 	private String password;
 	@Column(nullable=false)
 	private String occupation;
-	
-	@ManyToOne(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
-	@JoinColumn(name="admin_id",referencedColumnName="adminId",nullable=false)
-	private AdminEntity admin;
-	
-	@OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch= FetchType.LAZY)
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
 	private List<TimerEntity> timers;
 	
 	@OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch=FetchType.LAZY)	
@@ -56,7 +52,7 @@ public class UserEntity {
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserEntity(int userId, String username, String email, String password, String occupation, AdminEntity admin,
+	public UserEntity(int userId, String username, String email, String password, String occupation, 
 			List<TimerEntity> timers, List<StickyNoteEntity> stickyNotes, List<TaskEntity> tasks,
 			AnalyticsEntity analytics, List<DeadlineTaskEntity> deadlineTasks) {
 		super();
@@ -65,7 +61,6 @@ public class UserEntity {
 		this.email = email;
 		this.password = password;
 		this.occupation = occupation;
-		this.admin = admin;
 		this.timers = timers;
 		this.stickyNotes = stickyNotes;
 		this.tasks = tasks;
@@ -111,14 +106,6 @@ public class UserEntity {
 
 	public void setOccupation(String occupation) {
 		this.occupation = occupation;
-	}
-
-	public AdminEntity getAdmin() {
-		return admin;
-	}
-
-	public void setAdmin(AdminEntity admin) {
-		this.admin = admin;
 	}
 
 	public List<TimerEntity> getTimers() {

@@ -1,6 +1,6 @@
 package com.appdev.TaskSync.Entity;
 
-import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -20,27 +20,22 @@ public class TimerEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int timerId;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "userId", nullable = false)
+    @JsonBackReference
     private UserEntity user;
 
     @Column(nullable = false)
     private int duration;
-    @Column(nullable = false)
-    private LocalDateTime startTime;
-    @Column(nullable = false)
-    private LocalDateTime endTime;
 
     public TimerEntity() {
         super();
     }
 
-    public TimerEntity(int timerId, UserEntity user, int duration, LocalDateTime startTime, LocalDateTime endTime) {
+    public TimerEntity(int timerId, UserEntity user, int duration) {
         this.timerId = timerId;
         this.user = user;
         this.duration = duration;
-        this.startTime = startTime;
-        this.endTime = endTime;
     }
 
     public int getTimerId() {
@@ -65,21 +60,5 @@ public class TimerEntity {
 
     public void setDuration(int duration) {
         this.duration = duration;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
     }
 }

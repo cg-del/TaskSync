@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.appdev.TaskSync.Entity.UserEntity;
 import com.appdev.TaskSync.Repository.UserRepository;
 
+
 @Service
 public class UserService {
 	@Autowired
@@ -36,7 +37,6 @@ public class UserService {
 		try {
 			user = urepo.findById(userId).get();
 			
-			user.setAdmin(newUserDetails.getAdmin());
 			user.setTimers(newUserDetails.getTimers());
 			user.setStickyNotes(newUserDetails.getStickyNotes());
 			user.setTasks(newUserDetails.getTasks());
@@ -65,4 +65,22 @@ public class UserService {
 			msg=id + " not found.";
 		return msg;
 	}
+
+    // Signup Method
+    public UserEntity registerUser(UserEntity user) {
+        // Check if the user already exists
+        if (urepo.findByUsername(user.getUsername()) != null) {
+            throw new IllegalArgumentException("User already exists with this username.");
+        }
+        return urepo.save(user); // Save user without encoding the password
+    }
+
+    // Login Method
+    public UserEntity loginUser(String username, String password) {
+        UserEntity user = urepo.findByUsername(username);
+        if (user != null && user.getPassword().equals(password)) {
+            return user; // Successful login
+        }
+        return null; // Login failed
+    }
 }

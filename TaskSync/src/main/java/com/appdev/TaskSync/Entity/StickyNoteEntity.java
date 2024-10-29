@@ -29,7 +29,7 @@ public class StickyNoteEntity {
         this.noteId = noteId;
         this.user = user;
         this.content = content;
-
+    }
 
     public int getNoteId() {
         return noteId;
@@ -46,10 +46,6 @@ public class StickyNoteEntity {
     public void setContent(String content) {
         this.content = content;
     }
-    public String getColor() {
-        return color;
-    }
-
 
     public UserEntity getUser() {
         return user;
