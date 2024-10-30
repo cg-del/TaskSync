@@ -34,7 +34,7 @@ public class DeadlineTaskController {
 	public DeadlineTaskEntity putDeadlineTask(@RequestParam int id, @RequestBody DeadlineTaskEntity newDeadlineTaskDetails) {
 		return dserv.putDeadlineTask(id,newDeadlineTaskDetails);
 	}
-	@DeleteMapping("/deleteDeadlineTask")
+	@DeleteMapping("/deleteDeadlineTask/{id}")
 	public String deleteDeadlineTask(@PathVariable int id) {
 		return dserv.deleteDeadlineTask(id);
 	}

@@ -38,13 +38,13 @@ public class UserEntity {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)	
 	private List<StickyNoteEntity> stickyNotes;
 
-	@OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)	
 	private List<TaskEntity> tasks;
 	
 	@OneToOne(mappedBy="user", cascade = CascadeType.ALL)
 	private AnalyticsEntity analytics;
 	
-	@OneToMany(mappedBy="user", cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, orphanRemoval = true)
 	private List<DeadlineTaskEntity> deadlineTasks;
 	
 	public UserEntity() {

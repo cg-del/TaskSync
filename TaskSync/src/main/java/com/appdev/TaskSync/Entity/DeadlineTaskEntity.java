@@ -2,6 +2,8 @@ package com.appdev.TaskSync.Entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,8 +22,9 @@ public class DeadlineTaskEntity {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int deadlineTaskId;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "userId", nullable = false)
+	@JsonBackReference
     private UserEntity user;
 	private String description;
 	@Column(nullable=false)

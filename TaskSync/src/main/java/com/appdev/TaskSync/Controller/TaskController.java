@@ -34,7 +34,7 @@ public class TaskController {
 	public TaskEntity putTask(@RequestParam int id, @RequestBody TaskEntity newTaskDetails) {
 		return tserv.putTask(id,newTaskDetails);
 	}
-	@DeleteMapping("/deleteTask")
+	@DeleteMapping("/deleteTask/{id}")
 	public String deleteTask(@PathVariable int id) {
 		return tserv.deleteTask(id);
 	}

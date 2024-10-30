@@ -47,5 +47,6 @@ public class StickyNoteController {
     public String deleteStickynote(@PathVariable int id) {
         return sserv.deleteStickynote(id);
     }
+    
 }
 
