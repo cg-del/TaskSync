@@ -1,16 +1,25 @@
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Box,
   Button,
+  IconButton,
   List,
   ListItem,
   ListItemText,
   TextField,
   Typography,
+  LinearProgress,
+  Snackbar,
+  Grid,
 } from '@mui/material';
+import { Edit, Delete, PlayArrow, Pause } from '@mui/icons-material';
 import axios from 'axios';
-import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext';
+import timerSound from '../assets/timersound.wav';
+
+// Import the background image
+import backgroundImage from '../assets/asas.png';
 
 const Timer = () => {
   const { user } = useUser();
@@ -19,6 +28,10 @@ const Timer = () => {
   const [form, setForm] = useState({ hours: 0, minutes: 0, seconds: 0, timerId: null });
   const [isEditing, setIsEditing] = useState(false);
   const intervalRef = useRef(null);
+  const [playingTimerId, setPlayingTimerId] = useState(null);
+  const [initialDurations, setInitialDurations] = useState({});
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     if (!user) {
@@ -53,13 +66,29 @@ const Timer = () => {
     fetchTimers();
   }, [user, navigate]);
 
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setForm((prevForm) => ({ ...prevForm, [name]: parseInt(value, 10) || 0 }));
+    const parsedValue = parseInt(value, 10);
+
+    // Allow any numeric input, including zero
+    setForm((prevForm) => ({ ...prevForm, [name]: isNaN(parsedValue) ? 0 : parsedValue }));
   };
 
   const handleCreateTimer = async () => {
     const totalSeconds = form.hours * 3600 + form.minutes * 60 + form.seconds;
+    
+    // Check if the total duration is zero
+    if (totalSeconds <= 0) {
+      return; // Exit the function early if the duration is zero
+    }
+
     try {
       const response = await axios.post('http://localhost:8080/api/timer/postTimer', {
         user: {
@@ -122,13 +151,20 @@ const Timer = () => {
     } catch (error) {
       const errorMessage = error.response?.data || error.message;
       console.error(`Error deleting timer: ${errorMessage}`);
-      alert(`Failed to delete timer: ${errorMessage}`);
     }
   };
   
 
   const startCountdown = (timerId) => {
     if (intervalRef.current) clearInterval(intervalRef.current);
+
+    setPlayingTimerId(timerId); // Set the currently playing timer
+
+    // Store the initial duration if not already stored
+    setInitialDurations((prev) => ({
+      ...prev,
+      [timerId]: prev[timerId] || timers.find(timer => timer.timerId === timerId).duration,
+    }));
 
     intervalRef.current = setInterval(() => {
       setTimers((prevTimers) => {
@@ -138,6 +174,9 @@ const Timer = () => {
             if (newDuration <= 0) {
               clearInterval(intervalRef.current);
               handleDeleteTimer(timerId);
+              setPlayingTimerId(null); // Reset playing timer
+              setAlertOpen(true);
+              playSound(); // Play sound
               return null;
             }
             return { ...timer, duration: newDuration };
@@ -176,91 +215,304 @@ const Timer = () => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    return `🕧 ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  };
+
+  const playSound = () => {
+    const audio = new Audio(timerSound); // Use the imported sound file
+    audio.play();
+  };
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
+  const handleCancelUpdate = () => {
+    setForm({ hours: 0, minutes: 0, seconds: 0, timerId: null });
+    setIsEditing(false);
   };
 
   return (
-    <Box p={2}>
-      <Typography variant="h4" gutterBottom>
-        Timer Management
+    <Box
+      p={4}
+      sx={{
+        backgroundImage: `url(${backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        borderRadius: 3,
+        height: '90vh',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        border: '1px solid #ddd',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 2,
+      }}
+    >
+      <Typography
+        variant="h4"
+        gutterBottom
+        sx={{
+          color: '#00796b',
+          textShadow: '2px 2px #004d40',
+          backgroundColor: '#fff',
+          width: '80%',
+        }}
+      >
+        TaskSync Timer
+      </Typography>
+      <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  width: '80%',
+                  color: '#00796b',
+                  backgroundColor: '#fff',
+                  textShadow: '1px 1px #004d40',
+                }}
+      >
+        👋 Hello, {user.username}!
       </Typography>
       {user ? (
         <>
-          <Typography variant="h6" gutterBottom>
-            Hello, {user.username}!
-          </Typography>
-          <Box display="flex" alignItems="center" gap={2}>
-            <TextField
-              label="Hours"
-              type="number"
-              name="hours"
-              value={form.hours}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              margin="normal"
-            />
-            <TextField
-              label="Minutes"
-              type="number"
-              name="minutes"
-              value={form.minutes}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              margin="normal"
-            />
-            <TextField
-              label="Seconds"
-              type="number"
-              name="seconds"
-              value={form.seconds}
-              onChange={handleChange}
-              required
-              variant="outlined"
-              margin="normal"
-            />
-          </Box>
-          {isEditing ? (
-            <Button variant="contained" color="primary" onClick={handleUpdateTimer}>
-              Update Timer
-            </Button>
-          ) : (
-            <Button variant="contained" color="primary" onClick={handleCreateTimer}>
-              Create Timer
-            </Button>
-          )}
+          <Grid container spacing={4} sx={{ width: '100%', maxWidth: '800px', margin: '0 auto' }}>
+            <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid #ddd', borderRadius: 2, padding: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', backgroundColor: '#e0f7fa' }}>
 
-          <Typography variant="h5" mt={4}>
-            Existing Timers
-          </Typography>
-          <List>
-            {timers.map((timer) => (
-              <ListItem key={timer.timerId}>
-                <ListItemText
-                  primary={`Time Remaining: ${formatTime(timer.duration)}`}
+              <Box display="flex" alignItems="center" gap={2} mb={2}>
+                <TextField
+                  label="Hours"
+                  type="number"
+                  name="hours"
+                  value={form.hours}
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                  margin="normal"
+                  sx={{
+                    width: '80px',
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: '#00796b',
+                      },
+                      '&:hover fieldset': {
+                        borderColor: '#004d40',
+                      },
+                    },
+                  }}
                 />
-                <Button variant="outlined" color="secondary" onClick={() => handleEditTimer(timer)}>
-                  Edit
+                <TextField
+                  label="Minutes"
+                  type="number"
+                  name="minutes"
+                  value={form.minutes}
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                  margin="normal"
+                  sx={{
+                    width: '80px',
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: '#00796b',
+                      },
+                      '&:hover fieldset': {
+                        borderColor: '#004d40',
+                      },
+                    },
+                  }}
+                />
+                <TextField
+                  label="Seconds"
+                  type="number"
+                  name="seconds"
+                  value={form.seconds}
+                  onChange={handleChange}
+                  required
+                  variant="outlined"
+                  margin="normal"
+                  sx={{
+                    width: '80px',
+                    '& .MuiOutlinedInput-root': {
+                      '& fieldset': {
+                        borderColor: '#00796b',
+                      },
+                      '&:hover fieldset': {
+                        borderColor: '#004d40',
+                      },
+                    },
+                  }}
+                />
+              </Box>
+              <Box display="flex" gap={2}>
+                <Button
+                  variant="contained"
+                  sx={{
+                    backgroundColor: '#00796b',
+                    color: '#fff',
+                    '&:hover': {
+                      backgroundColor: '#004d40',
+                    },
+                  }}
+                  onClick={isEditing ? handleUpdateTimer : handleCreateTimer}
+                >
+                  {isEditing ? 'Update Timer' : 'Create Timer'}
                 </Button>
-                <Button variant="outlined" color="error" onClick={() => handleDeleteTimer(timer.timerId)}>
-                  Delete
-                </Button>
-                <Button variant="outlined" color="primary" onClick={() => startCountdown(timer.timerId)}>
-                  Start
-                </Button>
-                <Button variant="outlined" color="default" onClick={() => pauseCountdown(timer.timerId)}>
-                  Pause
-                </Button>
-              </ListItem>
-            ))}
+                {isEditing && (
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      color: '#00796b',
+                      borderColor: '#00796b',
+                      '&:hover': {
+                        borderColor: '#004d40',
+                      },
+                    }}
+                    onClick={handleCancelUpdate}
+                  >
+                    Cancel Update
+                  </Button>
+                )}
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                  backgroundColor: '#e0f7fa',
+                  borderRadius: 2,
+                  padding: 2,
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: '#00796b',
+                    textShadow: '1px 1px #004d40',
+                  }}
+                >
+                  Current Time
+                </Typography>
+                <Typography
+                  variant="h4"
+                  sx={{
+                    color: '#004d40',
+                    fontFamily: 'monospace',
+                  }}
+                >
+                  {currentTime.toLocaleTimeString()}
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
+
+          <Typography
+            variant="h5"
+            mt={4}
+            sx={{
+              color: 'black',
+              textShadow: '1px 1px #004d40',
+              width: '80%',
+              backgroundColor: '#fff',
+              textDecoration: 'underline',
+              textDecorationColor: '#004d40',
+              borderBottom: '1px solid #004d40',
+            }}
+          >
+            Study Timer 📚
+          </Typography>
+          <List
+            sx={{
+              minHeight: '300px',
+              overflow: 'auto',
+              backgroundColor: '#fff',
+              borderRadius: 2,
+              width: '80%',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+              border: '1px solid #ddd',
+            }}
+          >
+            {timers.map((timer) => {
+              const initialDuration = initialDurations[timer.timerId] || timer.duration;
+              const progress = (timer.duration / initialDuration) * 100;
+
+              return (
+                <ListItem
+                  key={timer.timerId}
+                  sx={{
+                    borderBottom: '1px solid #ddd',
+                    backgroundColor: timer.timerId === playingTimerId ? '#e0f7fa' : 'inherit', // Highlight playing timer
+                    '&:hover': {
+                      backgroundColor: '#f0f8ff',
+                    },
+                    borderRadius: 1,
+                    margin: '4px 0',
+                  }}
+                >
+                  <ListItemText
+                    primary={`Time Remaining: ${formatTime(timer.duration)}`}
+                    sx={{ color: '#333' }}
+                  />
+                  {timer.timerId === playingTimerId && (
+                    <LinearProgress
+                      variant="determinate"
+                      value={progress}
+                      sx={{
+                        width: '100%',
+                        marginTop: 1,
+                        height: 10, // Increase the height for better visibility
+                        borderRadius: 5, // Rounded corners
+                        '& .MuiLinearProgress-bar': {
+                          backgroundColor: '#00796b', // Custom bar color
+                        },
+                      }}
+                    />
+                  )}
+                  <IconButton color="secondary" onClick={() => handleEditTimer(timer)}>
+                    <Edit />
+                  </IconButton>
+                  <IconButton color="error" onClick={() => handleDeleteTimer(timer.timerId)}>
+                    <Delete />
+                  </IconButton>
+                  <IconButton color="primary" onClick={() => startCountdown(timer.timerId)}>
+                    <PlayArrow />
+                  </IconButton>
+                  <IconButton color="default" onClick={() => pauseCountdown(timer.timerId)}>
+                    <Pause />
+                  </IconButton>
+                </ListItem>
+              );
+            })}
           </List>
         </>
       ) : (
-        <Typography variant="h6" color="error">
+        <Typography
+          variant="h6"
+          color="error"
+          sx={{
+            fontFamily: '"Comic Sans MS", cursive, sans-serif',
+          }}
+        >
           Please log in to manage timers.
         </Typography>
       )}
+
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={6000}
+        onClose={handleAlertClose}
+        message="Timer has finished!"
+        action={
+          <Button color="inherit" size="small" onClick={handleAlertClose}>
+            Close
+          </Button>
+        }
+      />
     </Box>
   );
 };
