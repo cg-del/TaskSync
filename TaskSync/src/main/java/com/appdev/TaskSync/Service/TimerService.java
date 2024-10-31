@@ -42,10 +42,11 @@ public class TimerService {
 	public List<TimerEntity> getAllTimer() {
 		return trepo.findAll();
 	}
+
+	
 	@SuppressWarnings("finally")
 	public TimerEntity putTimer(int timerId,TimerEntity newTimerDetails) {
 		TimerEntity timer = new TimerEntity();
-		
 		try {
 			timer=trepo.findById(timerId).get();
 			

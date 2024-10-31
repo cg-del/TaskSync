@@ -2,7 +2,6 @@ package com.appdev.TaskSync.Entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,20 +26,17 @@ public class TaskEntity {
 	
 	@Column(nullable=false)
 	private String description;
-	
-	private boolean isCompleted;
 
 	public TaskEntity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public TaskEntity(int taskId, UserEntity user, String description, boolean isCompleted) {
+	public TaskEntity(int taskId, UserEntity user, String description) {
 		super();
 		this.taskId = taskId;
 		this.user = user;
 		this.description = description;
-		this.isCompleted = isCompleted;
 	}
 
 	public int getTaskId() {
@@ -66,13 +62,5 @@ public class TaskEntity {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public boolean isCompleted() {
-		return isCompleted;
-	}
-
-	public void setCompleted(boolean isCompleted) {
-		this.isCompleted = isCompleted;
 	}
 }

@@ -15,16 +15,31 @@ const Home = () => {
   return (
     <Container maxWidth="sm" style={{ marginTop: '20px', textAlign: 'center' }}>
       <Typography variant="h4" gutterBottom>
-        Welcome to the Timer App!
+        Welcome to the TaskSync!
       </Typography>
       {user ? ( // Check if user is logged in
         <>
           <Typography variant="h6" gutterBottom>
             Hello, {user.username}!
           </Typography>
+          <Link to="/Notes" state={{ user }}>
+            <Button variant="contained" color="primary" style={{ margin: '10px' }}>
+              Go to StickyNotes
+            </Button>
+          </Link>
+          <Link to="/Task" state={{ user }}>
+            <Button variant="contained" color="primary" style={{ margin: '10px' }}>
+              Go to Task
+            </Button>
+          </Link>
           <Link to="/timers" state={{ user }}>
             <Button variant="contained" color="primary" style={{ margin: '10px' }}>
               Go to Timers
+            </Button>
+          </Link>
+          <Link to="/Calendar" state={{ user }}>
+            <Button variant="contained" color="primary" style={{ margin: '10px' }}>
+              Go to Calendar
             </Button>
           </Link>
           <Button variant="outlined" color="secondary" style={{ margin: '10px' }} onClick={handleLogout}>
