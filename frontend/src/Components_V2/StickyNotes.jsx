@@ -1,127 +1,148 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import CheckIcon from '@mui/icons-material/Check'; // Import CheckIcon
+import { useUser } from '../UserContext'; // Import UserContext for user details
 
-export default function SimplePaper() {
-  const [notes, setNotes] = useState([]);  // State to hold sticky notes
+export default function StickyNotes() {
+  const { user } = useUser();
+  const [notes, setNotes] = useState([]);
+  const [newNoteContent, setNewNoteContent] = useState('');
+  const [editingNoteId, setEditingNoteId] = useState(null);
 
-  const addNote = () => {
-    setNotes([...notes.map(note => ({ ...note, editable: false })), { content: '', editable: true }]);
-  };
-
-  const updateNote = (index, content) => {
-    const updatedNotes = notes.map((note, i) => (i === index ? { ...note, content } : note));
-    setNotes(updatedNotes);  // Update the specific note
-  };
-
-  const saveNote = (index) => {
-    const updatedNotes = notes.map((note, i) => {
-      if (i === index) {
-        return { ...note, editable: false }; // Save the note and set editable to false
+  // Fetch all sticky notes on component mount
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/stickynote/getAllStickynotes');
+        console.log("Fetched Notes:", response.data);
+        setNotes(response.data);
+      } catch (error) {
+        console.error('Error fetching sticky notes:', error.response?.data || error.message);
       }
-      return note; // Keep other notes unchanged
-    });
-    setNotes(updatedNotes);
+    };
+
+    fetchNotes();
+  }, []);
+
+  const handleChangeNoteContent = (e) => {
+    setNewNoteContent(e.target.value);
   };
 
-  const toggleEdit = (index) => {
-    const updatedNotes = notes.map((note, i) => {
-      if (i === index) {
-        return { ...note, editable: !note.editable }; // Toggle editable state
+  const handleNoteOperation = async () => {
+    if (!user) {
+      console.error('User is not logged in');
+      return;
+    }
+
+    const noteData = {
+      content: newNoteContent,
+      user: { email: user.email },
+      editable: true,
+    };
+
+    try {
+      if (editingNoteId) {
+        // Update existing note
+        await axios.put(`http://localhost:8080/api/stickynote/putStickynoteDetails?id=${editingNoteId}`, noteData);
+        setNotes((prevNotes) =>
+          prevNotes.map((note) => (note.noteId === editingNoteId ? { ...note, content: newNoteContent } : note))
+        );
+        resetForm();
+      } else {
+        // Add new note
+        const response = await axios.post('http://localhost:8080/api/stickynote/postStickynote', noteData);
+        setNotes((prevNotes) => [...prevNotes, response.data]);
+        resetForm();
       }
-      return note; // Keep other notes unchanged
-    });
-    setNotes(updatedNotes);
+    } catch (error) {
+      console.error('Error adding/updating note:', error.response?.data || error.message);
+    }
   };
 
-  const deleteNote = (index) => {
-    const updatedNotes = notes.filter((_, i) => i !== index);
-    setNotes(updatedNotes);
+  const handleEdit = (note) => {
+    setNewNoteContent(note.content);
+    setEditingNoteId(note.noteId); // Set the ID of the note being edited
+  };
+
+  const resetForm = () => {
+    setNewNoteContent('');
+    setEditingNoteId(null);
+  };
+
+  const handleDelete = async (noteId) => {
+    if (!noteId) {
+      console.error("Note ID is undefined, cannot delete.");
+      return;
+    }
+  
+    if (window.confirm('Are you sure you want to delete this note?')) {
+      try {
+        console.log("Deleting note with ID:", noteId); // Debugging line
+        const response = await axios.delete(`http://localhost:8080/api/stickynote/deleteStickynoteDetails/${noteId}`);
+        alert(response.data); // Check the response message
+        // Ensure noteId is the same type as note.id (convert to string if necessary)
+        setNotes((prevNotes) => prevNotes.filter((note) => note.noteId !== noteId));
+      } catch (error) {
+        console.error('Error deleting note:', error.response?.data || error.message);
+        alert('Error deleting note: ' + (error.response?.data || error.message));
+      }
+    }
   };
 
   return (
     <Box sx={{ width: '100%', padding: 2 }}>
-      <Box sx={{ marginBottom: 2 }}>
-        <Button variant="contained" onClick={addNote}>
-          Add Sticky Note
+      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2, marginBottom: 2 }}>
+        <textarea
+          placeholder="New Note..."
+          value={newNoteContent}
+          onChange={handleChangeNoteContent}
+          style={{ 
+            width: "190px",
+            height: "100px",
+            padding: '10px', 
+            border: '1px solid #ccc', 
+            borderRadius: '4px', 
+            fontSize: '10px', 
+            outline: 'none', // Remove outline on focus
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            resize: 'none', // Prevent resizing if desired
+          }}
+        />
+        <Button variant="contained" onClick={handleNoteOperation}>
+          {editingNoteId ? 'Update Note' : 'Save Note'}
         </Button>
       </Box>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 2,
-        }}
-      >
-        {notes.map((note, index) => (
-          <Box key={index} className="sticky-note">
-            <Paper elevation={0} className="note-content">
-              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                {note.editable ? (
-                  <textarea
-                    value={note.content}
-                    onChange={(e) => updateNote(index, e.target.value)}
-                    placeholder="Empty Note..."
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      border: 'none',
-                      backgroundColor: 'transparent',
-                      resize: 'none',
-                      outline: 'none',
-                      padding: '10px',  // Adjust padding as needed
-                      textAlign: 'left', // Align text to the left
-                      lineHeight: '1.5',
-                      boxSizing: 'border-box', // Ensure padding is included in width/height
-                    }}
-                  />
-                ) : (
-                  <div style={{ padding: '10px', textAlign: 'left' }}>{note.content || "Empty Note"}</div>
-                )}
-                <IconButton
-                  onClick={() => saveNote(index)} // Save note on check icon click
-                  sx={{ position: 'absolute', top: -8, right: 35 }} // Adjust position
-                >
-                  <CheckIcon fontSize="default" />
-                </IconButton>
-                <IconButton
-                  onClick={() => toggleEdit(index)}
-                  sx={{ position: 'absolute', top: -5, right: 15 }} // Adjust position
-                >
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 0.3fr)', gap: 3 }}>
+        {notes.map((note) => (
+          <Box key={note.noteId} sx={{
+            backgroundColor: '#ffeb3b', //yellow
+            padding: '20px 10px 10px',
+            width: '180px',
+            height: '180px',
+            borderRadius: 2,
+            boxShadow: '0 6px 10px rgba(0, 0, 0, 0.4)',
+            fontSize: '14px',
+            position: 'relative',
+            overflow: 'hidden',
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', whiteSpace: 'pre-wrap', overflowWrap: 'break-word', }}>
+              <span>{note.content}</span>
+              <div>
+                <IconButton onClick={() => handleEdit(note)} sx={{ position: 'absolute', top: -6, right: 20 }}>
                   <EditIcon fontSize="small" />
                 </IconButton>
-                <IconButton
-                  onClick={() => deleteNote(index)}
-                  sx={{ position: 'absolute', top: -5, right: -5 }} // Adjust position
-                >
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
+                <IconButton onClick={() => handleDelete(note.noteId)} sx={{ position: 'absolute', top: -6, right: -5 }}>
+  <DeleteIcon fontSize="small" />
+</IconButton>
               </div>
-            </Paper>
+            </div>
           </Box>
         ))}
       </Box>
-
-      <style jsx>{`
-        .sticky-note {
-          position: relative;  /* Positioning for the pin */
-        }
-
-        .note-content {
-          background-color: #ffeb3b;  /* Yellow background */
-          border-radius: 8px;  /* Rounded corners */
-          padding: 0;  /* No padding for the note content */
-          height: 200px;  /* Fixed height for uniformity */
-          width: 200px;
-          display: block;  /* Use block layout */
-          box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
-        }
-      `}</style>
     </Box>
   );
 }
