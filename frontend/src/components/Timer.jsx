@@ -1,25 +1,25 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { Delete, Edit, Pause, PlayArrow } from '@mui/icons-material';
 import {
   Box,
   Button,
+  Grid,
   IconButton,
+  LinearProgress,
   List,
   ListItem,
   ListItemText,
+  Snackbar,
   TextField,
   Typography,
-  LinearProgress,
-  Snackbar,
-  Grid,
 } from '@mui/material';
-import { Edit, Delete, PlayArrow, Pause } from '@mui/icons-material';
 import axios from 'axios';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext';
 import timerSound from '../assets/timersound.wav';
 
 // Import the background image
-import backgroundImage from '../assets/asas.png';
+import backgroundImage from '../assets/asas.gif';
 
 const Timer = () => {
   const { user } = useUser();
@@ -256,21 +256,21 @@ const Timer = () => {
         sx={{
           color: '#00796b',
           textShadow: '2px 2px #004d40',
-          backgroundColor: '#fff',
-          width: '80%',
+          backgroundColor: 'rgba(224, 247, 250, 0.8)',
+          width: 'max-content',
         }}
       >
         TaskSync Timer
       </Typography>
       <Typography
-                variant="h6"
-                gutterBottom
-                sx={{
-                  width: '80%',
-                  color: '#00796b',
-                  backgroundColor: '#fff',
-                  textShadow: '1px 1px #004d40',
-                }}
+        variant="h6"
+        gutterBottom
+        sx={{
+          width: 'max-content',
+          color: '#00796b',
+          backgroundColor: 'rgba(224, 247, 250, 0.8)',
+          textShadow: '1px 1px #004d40',  
+        }}
       >
         👋 Hello, {user.username}!
       </Typography>
@@ -394,6 +394,7 @@ const Timer = () => {
                   sx={{
                     color: '#00796b',
                     textShadow: '1px 1px #004d40',
+                    backgroundColor: 'rgba(224, 247, 250, 0.8)',
                   }}
                 >
                   Current Time
@@ -417,7 +418,7 @@ const Timer = () => {
             sx={{
               color: 'black',
               textShadow: '1px 1px #004d40',
-              width: '80%',
+              width: 'max-content',
               backgroundColor: '#fff',
               textDecoration: 'underline',
               textDecorationColor: '#004d40',
@@ -430,7 +431,7 @@ const Timer = () => {
             sx={{
               minHeight: '300px',
               overflow: 'auto',
-              backgroundColor: '#fff',
+              backgroundColor: 'rgba(224, 247, 250, 0.8)',
               borderRadius: 2,
               width: '80%',
               boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
@@ -446,9 +447,9 @@ const Timer = () => {
                   key={timer.timerId}
                   sx={{
                     borderBottom: '1px solid #ddd',
-                    backgroundColor: timer.timerId === playingTimerId ? '#e0f7fa' : 'inherit', // Highlight playing timer
+                    backgroundColor: timer.timerId === playingTimerId ? 'rgba(224, 247, 250, 0.9)' : 'rgba(255, 255, 255, 0.8)',
                     '&:hover': {
-                      backgroundColor: '#f0f8ff',
+                      backgroundColor: 'rgba(240, 248, 255, 0.8)',
                     },
                     borderRadius: 1,
                     margin: '4px 0',
@@ -465,10 +466,10 @@ const Timer = () => {
                       sx={{
                         width: '100%',
                         marginTop: 1,
-                        height: 10, // Increase the height for better visibility
-                        borderRadius: 5, // Rounded corners
+                        height: 10,
+                        borderRadius: 5,
                         '& .MuiLinearProgress-bar': {
-                          backgroundColor: '#00796b', // Custom bar color
+                          backgroundColor: '#00796b',
                         },
                       }}
                     />
