@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import Notes from './Components_V2/StickyNotes';
 import Task from './Components_V2/Task';
-import Calendar from './Components_V2/Calendar';
+import Calendar from './Components_V2/TaskCalendar';
 
 import Timer from './components/Timer'; 
 import Home from './components/Home'; 
