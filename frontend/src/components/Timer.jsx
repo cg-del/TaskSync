@@ -40,7 +40,7 @@ const Timer = () => {
       return;
     }
   
-    console.log('User object:', user); // Log the entire user object
+    console.log('User object:', user); 
   
     if (!user.userId) {
       console.error('User ID is not available');
@@ -84,9 +84,8 @@ const Timer = () => {
   const handleCreateTimer = async () => {
     const totalSeconds = form.hours * 3600 + form.minutes * 60 + form.seconds;
     
-    // Check if the total duration is zero
     if (totalSeconds <= 0) {
-      return; // Exit the function early if the duration is zero
+      return; 
     }
 
     try {
@@ -94,7 +93,7 @@ const Timer = () => {
         user: {
           username: user.username,
           email: user.email,
-          password: user.password, // Ensure this is handled securely
+          password: user.password,
           occupation: user.occupation,
         },
         duration: totalSeconds,
@@ -121,7 +120,7 @@ const Timer = () => {
         user: {
           username: user.username,
           email: user.email,
-          password: user.password, // Ensure this is handled securely
+          password: user.password, 
           occupation: user.occupation,
         },
         duration: totalSeconds,
@@ -136,13 +135,10 @@ const Timer = () => {
 
   const handleDeleteTimer = async (timerId) => {
     try {
-      // Send DELETE request to the server
       await axios.delete(`http://localhost:8080/api/timer/deleteTimer/${timerId}`);
       
-      // Update the timers list by filtering out the deleted timer
       setTimers((prevTimers) => prevTimers.filter(timer => timer.timerId !== timerId));
   
-      // Clear interval if it’s running
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
       }
@@ -158,9 +154,8 @@ const Timer = () => {
   const startCountdown = (timerId) => {
     if (intervalRef.current) clearInterval(intervalRef.current);
 
-    setPlayingTimerId(timerId); // Set the currently playing timer
+    setPlayingTimerId(timerId); 
 
-    // Store the initial duration if not already stored
     setInitialDurations((prev) => ({
       ...prev,
       [timerId]: prev[timerId] || timers.find(timer => timer.timerId === timerId).duration,
@@ -191,6 +186,15 @@ const Timer = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
   
     // Find the timer that is being paused
+
+
+
+
+
+
+
+
+    
     const timer = timers.find(timer => timer.timerId === timerId);
     if (!timer) return;
   
@@ -200,7 +204,7 @@ const Timer = () => {
         user: {
           username: user.username,
           email: user.email,
-          password: user.password, // Ensure this is handled securely
+          password: user.password, 
           occupation: user.occupation,
         },
         duration: timer.duration,
@@ -219,7 +223,7 @@ const Timer = () => {
   };
 
   const playSound = () => {
-    const audio = new Audio(timerSound); // Use the imported sound file
+    const audio = new Audio(timerSound);
     audio.play();
   };
 
