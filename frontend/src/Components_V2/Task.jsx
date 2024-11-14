@@ -1,28 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import Table from '@mui/joy/Table';
-import Box from '@mui/joy/Box'; 
-import Button from '@mui/joy/Button'; 
+import Box from '@mui/joy/Box';
+import Button from '@mui/joy/Button';
 import Add from '@mui/icons-material/Add';
-import Edit from '@mui/icons-material/Edit'; 
-import Delete from '@mui/icons-material/Delete'; 
-import Typography from '@mui/joy/Typography'; 
-import Input from '@mui/joy/Input'; 
-import axios from 'axios'; 
-import { useUser } from '../UserContext'; 
+import Edit from '@mui/icons-material/Edit';
+import DeleteForever from '@mui/icons-material/DeleteForever';
+import Typography from '@mui/joy/Typography';
+import axios from 'axios';
+import { useUser } from '../UserContext';
+import Modal from '@mui/joy/Modal';
+import ModalDialog from '@mui/joy/ModalDialog';
+import DialogTitle from '@mui/joy/DialogTitle';
+import DialogContent from '@mui/joy/DialogContent';
+import DialogActions from '@mui/joy/DialogActions';
+import Divider from '@mui/joy/Divider';
+import FormControl from '@mui/joy/FormControl';
+import FormLabel from '@mui/joy/FormLabel';
+import Input from '@mui/joy/Input';
+import Stack from '@mui/joy/Stack';
+import IconButton from '@mui/joy/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function TableAlignment() {
   const { user } = useUser();
-  const [rows, setRows] = useState([]); 
-  const [newTaskDescription, setNewTaskDescription] = useState(''); 
-  const [editingTaskId, setEditingTaskId] = useState(null); 
+  const [rows, setRows] = useState([]);
+  const [newTaskDescription, setNewTaskDescription] = useState('');
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
+  const [openAddTaskModal, setOpenAddTaskModal] = useState(false);
+  const [addTaskDescription, setAddTaskDescription] = useState(''); // Separate state for Add Task modal
+  const [openEditTaskModal, setOpenEditTaskModal] = useState(false); // State for Edit Task modal
 
   useEffect(() => {
     if (user) {
       const fetchTasks = async () => {
         try {
-          // Assuming user has a unique email or ID for fetching tasks
           const response = await axios.get(`http://localhost:8080/api/task/getTasksByUser?userId=${user.userId}`);
-          console.log("Fetched Tasks:", response.data);
           setRows(response.data);
         } catch (error) {
           console.error('Error fetching tasks:', error.response?.data || error.message);
@@ -35,66 +49,79 @@ export default function TableAlignment() {
     }
   }, [user]);
 
-  const handleChangeTaskDescription = (e) => {
-    setNewTaskDescription(e.target.value);
-  };
-
-  const handleTaskOperation = async () => {
-    if (!user) {
-      console.error('User is not logged in');
+  const handleAddTask = async () => {
+    if (!user || !addTaskDescription) {
+      console.error('User is not logged in or task description is empty');
       return;
     }
 
     const taskData = {
-      description: newTaskDescription,
+      description: addTaskDescription,
       user: { email: user.email },
     };
 
     try {
-      if (editingTaskId) {
-        // Update existing task
-        await axios.put(`http://localhost:8080/api/task/putTask?id=${editingTaskId}`, taskData);
-        setRows((prevRows) =>
-          prevRows.map((row) => (row.taskId === editingTaskId ? { ...row, description: newTaskDescription } : row))
-        );
-        resetForm();
-      } else {
-        // Add new task
-        const response = await axios.post('http://localhost:8080/api/task/postTask', taskData);
-        setRows((prevRows) => [...prevRows, response.data]);
-        resetForm();
-      }
+      const response = await axios.post('http://localhost:8080/api/task/postTask', taskData);
+      setRows((prevRows) => [...prevRows, response.data]);
+      setAddTaskDescription(''); // Reset the add task description
+      setOpenAddTaskModal(false);  // Close modal after adding the task
     } catch (error) {
-      console.error('Error adding/updating task:', error.response?.data || error.message);
+      console.error('Error adding task:', error.response?.data || error.message);
     }
   };
 
   const handleEdit = (row) => {
     setNewTaskDescription(row.description);
-    setEditingTaskId(row.taskId); // Set the ID of the task being edited
+    setEditingTaskId(row.taskId);
+    setOpenEditTaskModal(true); // Open the edit modal
   };
 
-  const resetForm = () => {
-    setNewTaskDescription('');
-    setEditingTaskId(null);
-  };
-
-  const handleDelete = async (taskId) => {
-    if (!taskId) {
-      console.error("Task ID is undefined, cannot delete.");
+  const handleUpdateTask = async () => {
+    if (!editingTaskId || !newTaskDescription) {
+      console.error('Task ID or description is empty');
       return;
     }
 
-    if (window.confirm('Are you sure you want to delete this task?')) {
-      try {
-        const response = await axios.delete(`http://localhost:8080/api/task/deleteTask/${taskId}`);
-        alert(response.data);
-        setRows((prevRows) => prevRows.filter((row) => row.taskId !== taskId));
-      } catch (error) {
-        console.error('Error deleting task:', error.response?.data || error.message);
-        alert('Error deleting task: ' + (error.response?.data || error.message));
-      }
+    const taskData = {
+      description: newTaskDescription,
+      user: { email: user.email }, // Include user information
+  };
+
+    try {
+      const response = await axios.put(`http://localhost:8080/api/task/updateTask/${editingTaskId}`, taskData);
+      setRows((prevRows) => prevRows.map((row) => (row.taskId === editingTaskId ? response.data : row)));
+      setNewTaskDescription(''); // Reset the new task description
+      setOpenEditTaskModal(false); // Close the edit modal
+    } catch (error) {
+      console.error('Error updating task:', error.response ? error.response.data : error.message);
     }
+  };
+
+  const openDeleteConfirmation = (taskId) => {
+    setTaskToDelete(taskId);
+    setOpenConfirmation(true);
+  };
+
+  const handleDelete = async () => {
+    if (!taskToDelete) return;
+
+    try {
+      await axios.delete(`http://localhost:8080/api/task/deleteTask/${taskToDelete}`);
+      setRows((prevRows) => prevRows.filter((row) => row.taskId !== taskToDelete));
+      setOpenConfirmation(false);
+    } catch (error) {
+      console.error('Error deleting task:', error.response?.data || error.message);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setOpenConfirmation(false);
+  };
+
+  // Update the openAddTaskModal function to reset the description
+  const openAddTaskModalHandler = () => {
+    setAddTaskDescription(''); // Reset the description when opening the modal
+    setOpenAddTaskModal(true);
   };
 
   return (
@@ -103,22 +130,132 @@ export default function TableAlignment() {
         To-do List
       </Typography>
 
-      <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', marginBottom: 2 }}>
-        <Input
-          color="neutral"
-          placeholder="To-do"
-          value={newTaskDescription}
-          onChange={handleChangeTaskDescription}
-          sx={{ flexGrow: 1 }} 
-        />
-        <Button
-          startDecorator={<Add />}
-          onClick={handleTaskOperation}
-        >
-          {editingTaskId ? 'Update Task' : 'Add Task'}
-        </Button>
-      </Box>
+      {/* Button to trigger the Add Task Modal */}
+      <Button
+        variant="outlined"
+        color="neutral"
+        startDecorator={<Add />}
+        onClick={openAddTaskModalHandler} // Use the new handler
+      >
+        Add Task
+      </Button>
 
+      {/* Confirmation Modal */}
+      <Modal open={openConfirmation} onClose={handleCancelDelete}>
+        <ModalDialog variant="outlined" role="alertdialog">
+          <DialogTitle>Delete Task</DialogTitle>
+          <Divider />
+          <DialogContent>
+            Are you sure you want to delete this task?
+          </DialogContent>
+          <DialogActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              variant="plain"
+              color="neutral"
+              onClick={handleCancelDelete}
+              sx={{ textTransform: 'none', paddingLeft: 0, paddingRight: 0 }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="outlined"
+              color="danger"
+              onClick={handleDelete}
+              sx={{
+                borderColor: 'red',
+                color: 'red',
+                textTransform: 'none',
+                marginLeft: 20, // Adds space between the buttons
+              }}
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </ModalDialog>
+      </Modal>
+
+      {/* Add Task Modal */}
+      <Modal open={openAddTaskModal} onClose={() => setOpenAddTaskModal(false)}>
+        
+        <ModalDialog sx={{ maxWidth: '450px', width: '100%' }} >
+          {/* Close Button */}
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpenAddTaskModal(false)}
+            sx={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+              color: 'gray',
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogTitle>Add task</DialogTitle>
+          <DialogContent>Fill in the todo description.</DialogContent>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              handleAddTask();
+            }}
+          >
+            <Stack spacing={3}>
+              <FormControl>
+                <FormLabel>Task Description</FormLabel>
+                <Input
+                  autoFocus
+                  required
+                  value={addTaskDescription} // Use addTaskDescription instead
+                  onChange={(e) => setAddTaskDescription(e.target.value)} // Use addTaskDescription instead
+                />
+              </FormControl>
+              <Button type="submit">Add Task</Button>
+            </Stack>
+          </form>
+        </ModalDialog>
+      </Modal>
+
+      {/* Edit Task Modal */}
+      <Modal open={openEditTaskModal} onClose={() => setOpenEditTaskModal(false)}>
+        <ModalDialog sx={{ maxWidth: '450px', width: '100%' }} >
+          {/* Close Button */}
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpenEditTaskModal(false)}
+            sx={{
+              position: 'absolute',
+              top: 8,
+              right: 8,
+              color: 'gray',
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogTitle>Edit task</DialogTitle>
+          <DialogContent>Update the todo description.</DialogContent>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              handleUpdateTask();
+            }}
+          >
+            <Stack spacing={3}>
+              <FormControl>
+                <FormLabel>Task Description</FormLabel>
+                <Input
+                  autoFocus
+                  required
+                  value={newTaskDescription} // Use newTaskDescription for editing
+                  onChange={(e) => setNewTaskDescription(e.target.value)} // Use newTaskDescription for editing
+                />
+              </FormControl>
+              <Button type="submit">Update Task</Button>
+            </Stack>
+          </form>
+        </ModalDialog>
+      </Modal>
+
+      {/* Tasks Table */}
       <Table sx={{ '& tr > *:not(:first-of-type)': { textAlign: 'left' } }}>
         <thead>
           <tr>
@@ -141,8 +278,13 @@ export default function TableAlignment() {
                 </Button>
                 <Button
                   variant="outlined"
-                  startDecorator={<Delete />}
-                  onClick={() => handleDelete(row.taskId)}
+                  startDecorator={<DeleteForever />}
+                  onClick={() => openDeleteConfirmation(row.taskId)}
+                  sx={{
+                    borderColor: 'red',
+                    color: 'red',
+                    textTransform: 'none',
+                  }}
                 >
                   Delete
                 </Button>

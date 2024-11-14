@@ -41,17 +41,17 @@ public class TaskController {
         return tserv.getAllTask();
     }
 
-    @PutMapping("/putTask")
-public ResponseEntity<?> updateTask(@RequestParam int id, @RequestBody TaskEntity task) {
-    Optional<UserEntity> user = Optional.ofNullable(urepo.findByEmail(task.getUser().getEmail())); // Use 'urepo' here
-    if (user.isPresent()) {
-        task.setUser(user.get()); // Attach the persisted UserEntity
-        TaskEntity updatedTask = tserv.putTask(id, task); // Call the service layer's `putTask` method
-        return ResponseEntity.ok(updatedTask);
-    } else {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-    }
-}   
+    @PutMapping("/updateTask/{id}") // Change to /updateTask/{id}
+    public ResponseEntity<?> updateTask(@PathVariable int id, @RequestBody TaskEntity task) { // Use @PathVariable
+        Optional<UserEntity> user = Optional.ofNullable(urepo.findByEmail(task.getUser().getEmail())); // Use 'urepo' here
+        if (user.isPresent()) {
+            task.setUser(user.get()); // Attach the persisted UserEntity
+            TaskEntity updatedTask = tserv.putTask(id, task); // Call the service layer's `putTask` method
+            return ResponseEntity.ok(updatedTask);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }    
 
 
     @DeleteMapping("/deleteTask/{id}")
