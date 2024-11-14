@@ -6,7 +6,6 @@ import Add from '@mui/icons-material/Add';
 import Edit from '@mui/icons-material/Edit';
 import Delete from '@mui/icons-material/Delete';
 import Typography from '@mui/joy/Typography';
-import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useUser } from '../UserContext';
 import Calendar from 'react-calendar';
@@ -15,6 +14,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import TextField from '@mui/material/TextField';
 
 export default function TaskCalendar() {
   const { user } = useUser();
@@ -23,6 +23,16 @@ export default function TaskCalendar() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+
+  const taskColors = [
+    '#ffd54f', // Light Yellow
+    '#ff8a80', // Light Red
+    '#80deea', // Light Cyan
+    '#b388ff', // Light Purple
+    '#c5e1a5', // Light Green
+    '#ffcc80', // Light Orange
+    '#e1bee7'  // Light Pink
+  ];
 
   const formatDateString = (date) => {
     const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
@@ -122,14 +132,20 @@ export default function TaskCalendar() {
       return;
     }
 
-    if (window.confirm('Are you sure you want to delete this task?')) {
-      try {
-        await axios.delete(`http://localhost:8080/api/taskcalendar/deleteTaskCal/${calendarId}`);
-        setRows(prevRows => prevRows.filter(row => row.calendarId !== calendarId));
-      } catch (error) {
-        console.error('Error deleting task:', error.response?.data || error.message);
-      }
+    try {
+      await axios.delete(`http://localhost:8080/api/taskcalendar/deleteTaskCal/${calendarId}`);
+      setRows(prevRows => prevRows.filter(row => row.calendarId !== calendarId));
+    } catch (error) {
+      console.error('Error deleting task:', error.response?.data || error.message);
     }
+  };
+
+  const tileClassName = ({ date }) => {
+    const calendarDate = formatDateString(date);
+    return rows
+      .filter(row => row.date === calendarDate)
+      .map((task, index) => `task-highlight-${index % taskColors.length}`)
+      .join(' ');
   };
 
   return (
@@ -139,6 +155,7 @@ export default function TaskCalendar() {
         value={selectedDate}
         onClickDay={(date) => setSelectedDate(date)}
         locale="en-US"
+        tileClassName={tileClassName}
         firstDayOfWeek={0}
       />
       <Box sx={{ flex: 1 }}>
@@ -203,6 +220,31 @@ export default function TaskCalendar() {
           </DialogActions>
         </Dialog>
       </Box>
+
+      <style>{`
+        .task-highlight-0 {
+          background-color: #ffd54f; /* Light Yellow */
+        }
+        .task-highlight-1 {
+          background-color: #ff8a80; /* Light Red */
+        }
+        .task-highlight-2 {
+          background-color: #80deea; /* Light Cyan */
+        }
+        .task-highlight-3 {
+          background-color: #b388ff; /* Light Purple */
+        }
+        .task-highlight-4 {
+          background-color: #c5e1a5; /* Light Green */
+        }
+        .task-highlight-5 {
+          background-color: #ffcc80; /* Light Orange */
+        }
+        .task-highlight-6 {
+          background-color: #e1bee7; /* Light Pink */
+        }
+      `}</style>
     </Box>
   );
 }
+ 
