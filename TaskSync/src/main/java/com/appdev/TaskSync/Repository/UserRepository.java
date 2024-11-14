@@ -8,6 +8,5 @@ import com.appdev.TaskSync.Entity.UserEntity;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
     // Method to find a user by username
-    UserEntity findByUsername(String username);
     UserEntity findByEmail(String email);
 }

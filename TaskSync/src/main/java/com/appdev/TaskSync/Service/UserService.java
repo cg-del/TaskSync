@@ -69,15 +69,15 @@ public class UserService {
     // Signup Method
     public UserEntity registerUser(UserEntity user) {
         // Check if the user already exists
-        if (urepo.findByUsername(user.getUsername()) != null) {
-            throw new IllegalArgumentException("User already exists with this username.");
+        if (urepo.findByEmail(user.getEmail()) != null) {
+            throw new IllegalArgumentException("User already exists with this email.");
         }
         return urepo.save(user); // Save user without encoding the password
     }
 
     // Login Method
-    public UserEntity loginUser(String username, String password) {
-        UserEntity user = urepo.findByUsername(username);
+    public UserEntity loginUser(String email, String password) {
+        UserEntity user = urepo.findByEmail(email);
         if (user != null && user.getPassword().equals(password)) {
             return user; // Successful login
         }

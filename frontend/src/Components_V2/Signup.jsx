@@ -1,31 +1,37 @@
-import * as React from 'react';
-import {
-  Button,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  TextField,
-  InputAdornment,
-  Link,
-  IconButton,
-  Box,
-  Typography,
-} from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { AppProvider } from '@toolpad/core/AppProvider';
+import {
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  InputAdornment,
+  InputLabel,
+  Link,
+  OutlinedInput,
+  Typography,
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { AppProvider } from '@toolpad/core/AppProvider';
+import * as React from 'react';
+import axios from 'axios'; // Import axios
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useUser } from '../UserContext'; // Import useUser
 
 export default function CustomSignUp({ toggleAuth }) {
   const theme = useTheme();
+  const navigate = useNavigate(); // Initialize useNavigate
+  const { setUser } = useUser(); // Get setUser from UserContext
   const [showPassword, setShowPassword] = React.useState(false);
   const [formData, setFormData] = React.useState({
-    name: '',
+    username: '',
     email: '',
     password: '',
     occupation: '',
   });
+  const [error, setError] = React.useState(''); // State for error message
+  const [success, setSuccess] = React.useState(''); // State for success message
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,9 +43,33 @@ export default function CustomSignUp({ toggleAuth }) {
     event.preventDefault();
   };
 
-  const handleSubmit = (e) => {
+  // Updated handleSubmit to include API call and redirect
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(`Signing up with: ${JSON.stringify(formData)}`);
+    setError(''); // Reset error message
+    setSuccess(''); // Reset success message
+    try {
+      const response = await axios.post('http://localhost:8080/api/user/signup', formData);
+      console.log('Response data:', response.data); // Log the response data
+      setUser(response.data); // Set user data in context
+      setSuccess('Signup successful!'); // Set success message
+      // Clear input fields
+      setFormData({
+        username: '',
+        email: '',
+        password: '',
+        occupation: '',
+      });
+      navigate('/'); // Redirect to home page after successful signup
+    } catch (err) {
+      console.error('Signup error:', err); // Log the error for debugging
+      if (err.response) {
+        setError('Signup failed: ' + (err.response.data?.message || 'Server error'));
+      } else {
+        setError('Signup failed: ' + err.message);
+      }
+      setSuccess('');
+    }
   };
 
   return (
@@ -74,14 +104,17 @@ export default function CustomSignUp({ toggleAuth }) {
             Welcome user!
           </Typography>
 
+          {error && <Typography color="error">{error}</Typography>} {/* Display error message */}
+          {success && <Typography color="success">{success}</Typography>} {/* Display success message */}
+
           <FormControl sx={{ my: 1 }} fullWidth variant="outlined">
             <InputLabel size="small" htmlFor="outlined-adornment-name">
               Name
             </InputLabel>
             <OutlinedInput
               id="outlined-adornment-name"
-              label="Name"
-              name="name"
+              label="Username"
+              name="username"
               type="text"
               size="small"
               required
@@ -163,7 +196,7 @@ export default function CustomSignUp({ toggleAuth }) {
             Sign Up
           </Button>
 
-          <Link href="#" onClick={toggleAuth} variant="body2" sx={{ textAlign: 'center' }}>
+          <Link href="/Loginv2" onClick={toggleAuth} variant="body2" sx={{ textAlign: 'center' }}>
             Already have an account? Sign in
           </Link>
         </Box>

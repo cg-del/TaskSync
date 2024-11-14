@@ -240,8 +240,8 @@ const Timer = () => {
     <Box
       p={4}
       sx={{
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: 'cover',
+        // backgroundImage: `url(${backgroundImage})`,
+        // backgroundSize: 'cover',
         backgroundPosition: 'center',
         borderRadius: 3,
         height: '90vh',

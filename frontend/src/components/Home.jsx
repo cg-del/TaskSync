@@ -1,6 +1,6 @@
+import { Button, Container, Typography } from '@mui/material';
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import Link and useNavigate from react-router-dom
-import { Container, Typography, Button } from '@mui/material';
 import { useUser } from '../UserContext'; // Import useUser to access user context
 
 const Home = () => {
@@ -9,7 +9,7 @@ const Home = () => {
 
   const handleLogout = () => {
     setUser(null); // Clear the user context
-    navigate('/login'); // Redirect to the login page
+    navigate('/loginv2'); // Redirect to the login page
   };
 
   return (
@@ -48,12 +48,12 @@ const Home = () => {
         </>
       ) : (
         <>
-          <Link to="/login">
+          <Link to="/Loginv2">
             <Button variant="outlined" color="secondary" style={{ margin: '10px' }}>
               Login
             </Button>
           </Link>
-          <Link to="/signup">
+          <Link to="/Signupv2">
             <Button variant="outlined" color="secondary" style={{ margin: '10px' }}>
               Sign Up
             </Button>
