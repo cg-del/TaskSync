@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.config.Task;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.appdev.TaskSync.Entity.TaskCalendarEntity;
+import com.appdev.TaskSync.Entity.TaskEntity;
 import com.appdev.TaskSync.Entity.UserEntity;
 import com.appdev.TaskSync.Repository.UserRepository;
 import com.appdev.TaskSync.Service.TaskCalendarService;
@@ -35,7 +37,7 @@ public class TaskCalendarController {
     @PostMapping("/addTaskCal")
     public ResponseEntity<TaskCalendarEntity> addTask(@RequestBody TaskCalendarEntity taskCalendar) {
         if (taskCalendar.getUser() == null || taskCalendar.getUser().getUserId() == 0) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Return bad request if user or userId is not set
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); 
         }
 
         UserEntity user = userRepo.findById(taskCalendar.getUser().getUserId())
@@ -46,14 +48,24 @@ public class TaskCalendarController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTask);
     }
 
-    @GetMapping("/getAllTasksCal")
+    @GetMapping("/getTasksByUser")
+    public List<TaskCalendarEntity> getTasksByUser(@RequestParam int userId) {
+        return taskCalendarService.getTasksByUserId(userId);
+    }
+
+     @GetMapping("/getAllTask")
     public List<TaskCalendarEntity> getAllTasks() {
         return taskCalendarService.getAllTasks();
     }
 
+    @GetMapping("/getTasksCalByDate")
+    public List<TaskCalendarEntity> getTasksByDate(@RequestParam String date) {
+        LocalDate parsedDate = LocalDate.parse(date);
+        return taskCalendarService.getTasksByDate(parsedDate);
+    }
+
     @PutMapping("/updateTaskCal")
     public ResponseEntity<?> updateTask(@RequestParam int calendarId, @RequestBody TaskCalendarEntity taskCalendar) {
-        // Check if the user object is provided
         if (taskCalendar.getUser() != null && taskCalendar.getUser().getUserId() != 0) {
             try {
                 UserEntity user = userRepo.findById(taskCalendar.getUser().getUserId())
@@ -82,16 +94,5 @@ public class TaskCalendarController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
         }
-    }
-
-    @GetMapping("/getTasksCalByUser")
-    public List<TaskCalendarEntity> getTasksByUser(@RequestParam int userId) {
-        return taskCalendarService.getTasksByUserId(userId);
-    }
-
-    @GetMapping("/getTasksCalByDate")
-    public List<TaskCalendarEntity> getTasksByDate(@RequestParam String date) {
-        LocalDate parsedDate = LocalDate.parse(date);
-        return taskCalendarService.getTasksByDate(parsedDate);
     }
 }

@@ -38,25 +38,33 @@ export default function TaskCalendar() {
     const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
     return utcDate.toISOString().split('T')[0]; // Format date as 'YYYY-MM-DD'
   };
-
+  
   useEffect(() => {
     const fetchAllTasks = async () => {
       if (user) {
         try {
-          const response = await axios.get(`http://localhost:8080/api/taskcalendar/getAllTasksCal`);
+          const response = await axios.get(`http://localhost:8080/api/taskcalendar/getTasksByUser?userId=${user.userId}`);
           const parsedTasks = response.data.map(row => ({
             ...row,
-            date: formatDateString(new Date(row.date)) // Convert each date to 'YYYY-MM-DD'
+            date: formatDateString(new Date(row.date)) 
           }));
           setRows(parsedTasks);
         } catch (error) {
           console.error('Error fetching tasks:', error.response?.data || error.message);
+          console.error('Error details:', {
+            status: error.response?.status,
+            statusText: error.response?.statusText,
+            data: error.response?.data,
+          });
         }
+      } else {
+        console.log('No user logged in');
       }
     };
-
+  
     fetchAllTasks();
   }, [user]);
+  
 
   const handleAddTask = async () => {
     if (!user) {
@@ -131,7 +139,7 @@ export default function TaskCalendar() {
       console.error("Calendar ID is undefined");
       return;
     }
-
+    
     try {
       await axios.delete(`http://localhost:8080/api/taskcalendar/deleteTaskCal/${calendarId}`);
       setRows(prevRows => prevRows.filter(row => row.calendarId !== calendarId));
@@ -221,7 +229,7 @@ export default function TaskCalendar() {
         </Dialog>
       </Box>
 
-      <style>{`
+      <style jsx>{`
         .task-highlight-0 {
           background-color: #ffd54f; /* Light Yellow */
         }
@@ -247,4 +255,3 @@ export default function TaskCalendar() {
     </Box>
   );
 }
- 

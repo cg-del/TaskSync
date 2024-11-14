@@ -11,7 +11,7 @@ import com.appdev.TaskSync.Entity.TaskCalendarEntity;
 @Repository
 public interface TaskCalendarRepository extends JpaRepository<TaskCalendarEntity, Integer> {
 
-    List<TaskCalendarEntity> findByUserUserId(int userId);
+    List<TaskCalendarEntity> findByUser_UserId(int userId);
 
     List<TaskCalendarEntity> findByDate(LocalDate date);
 }

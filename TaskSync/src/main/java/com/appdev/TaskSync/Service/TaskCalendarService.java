@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-import javax.naming.NameNotFoundException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +22,12 @@ public class TaskCalendarService {
     private UserRepository userRepo;
 
     public List<TaskCalendarEntity> getTasksByUserId(int userId) {
-        return taskCalendarRepo.findByUserUserId(userId);
+        return taskCalendarRepo.findByUser_UserId(userId);
     }
 
     public TaskCalendarEntity addTask(TaskCalendarEntity taskCalendar) {
         UserEntity user = userRepo.findById(taskCalendar.getUser().getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + taskCalendar.getUser().getUserId()));
+                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + taskCalendar.getUser().getUserId()));
         taskCalendar.setUser(user);
         return taskCalendarRepo.save(taskCalendar);
     }
@@ -37,12 +35,11 @@ public class TaskCalendarService {
     public List<TaskCalendarEntity> getAllTasks() {
         return taskCalendarRepo.findAll();
     }
-    
-    public TaskCalendarEntity updateTask(int calendarId, TaskCalendarEntity newTaskDetails) throws NameNotFoundException {
+
+    public TaskCalendarEntity updateTask(int calendarId, TaskCalendarEntity newTaskDetails) {
         TaskCalendarEntity taskCalendar = taskCalendarRepo.findById(calendarId)
             .orElseThrow(() -> new NoSuchElementException("TaskCalendar " + calendarId + " not found!"));
     
-        // Check if the user is provided and exists
         if (newTaskDetails.getUser() != null && newTaskDetails.getUser().getUserId() != 0) {
             UserEntity user = userRepo.findById(newTaskDetails.getUser().getUserId())
                 .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + newTaskDetails.getUser().getUserId()));
