@@ -8,25 +8,27 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { useUser } from '../UserContext'; // Import UserContext for user details
 
 export default function StickyNotes() {
-  const { user } = useUser();
+  const { user } = useUser();  // Getting user data from context
   const [notes, setNotes] = useState([]);
   const [newNoteContent, setNewNoteContent] = useState('');
   const [editingNoteId, setEditingNoteId] = useState(null);
 
-  // Fetch all sticky notes on component mount
+  // Fetch sticky notes only for the logged-in user
   useEffect(() => {
-    const fetchNotes = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/api/stickynote/getAllStickynotes');
-        console.log("Fetched Notes:", response.data);
-        setNotes(response.data);
-      } catch (error) {
-        console.error('Error fetching sticky notes:', error.response?.data || error.message);
-      }
-    };
+    if (user) {
+      const fetchNotes = async () => {
+        try {
+          const response = await axios.get(`http://localhost:8080/api/stickynote/getStickynotesByUser?userId=${user.userId}`);
+          console.log("Fetched Notes:", response.data);
+          setNotes(response.data);
+        } catch (error) {
+          console.error('Error fetching sticky notes:', error.response?.data || error.message);
+        }
+      };
 
-    fetchNotes();
-  }, []);
+      fetchNotes();
+    }
+  }, [user]); // Re-fetch notes whenever the user changes
 
   const handleChangeNoteContent = (e) => {
     setNewNoteContent(e.target.value);
@@ -81,10 +83,8 @@ export default function StickyNotes() {
   
     if (window.confirm('Are you sure you want to delete this note?')) {
       try {
-        console.log("Deleting note with ID:", noteId); // Debugging line
         const response = await axios.delete(`http://localhost:8080/api/stickynote/deleteStickynoteDetails/${noteId}`);
-        alert(response.data); // Check the response message
-        // Ensure noteId is the same type as note.id (convert to string if necessary)
+        alert(response.data);
         setNotes((prevNotes) => prevNotes.filter((note) => note.noteId !== noteId));
       } catch (error) {
         console.error('Error deleting note:', error.response?.data || error.message);
@@ -136,8 +136,8 @@ export default function StickyNotes() {
                   <EditIcon fontSize="small" />
                 </IconButton>
                 <IconButton onClick={() => handleDelete(note.noteId)} sx={{ position: 'absolute', top: -6, right: -5 }}>
-  <DeleteIcon fontSize="small" />
-</IconButton>
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
               </div>
             </div>
           </Box>

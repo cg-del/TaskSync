@@ -51,7 +51,7 @@ public ResponseEntity<?> updateTask(@RequestParam int id, @RequestBody TaskEntit
     } else {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
     }
-}
+}   
 
 
     @DeleteMapping("/deleteTask/{id}")

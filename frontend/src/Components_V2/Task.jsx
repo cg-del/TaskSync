@@ -17,18 +17,23 @@ export default function TableAlignment() {
   const [editingTaskId, setEditingTaskId] = useState(null); 
 
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/api/task/getAllTask');
-        console.log("Fetched Tasks:", response.data);
-        setRows(response.data);
-      } catch (error) {
-        console.error('Error fetching tasks:', error.response?.data || error.message);
-      }
-    };
+    if (user) {
+      const fetchTasks = async () => {
+        try {
+          // Assuming user has a unique email or ID for fetching tasks
+          const response = await axios.get(`http://localhost:8080/api/task/getTasksByUser?userId=${user.userId}`);
+          console.log("Fetched Tasks:", response.data);
+          setRows(response.data);
+        } catch (error) {
+          console.error('Error fetching tasks:', error.response?.data || error.message);
+        }
+      };
 
-    fetchTasks();
-  }, []);
+      fetchTasks();
+    } else {
+      console.log('No user logged in');
+    }
+  }, [user]);
 
   const handleChangeTaskDescription = (e) => {
     setNewTaskDescription(e.target.value);
