@@ -10,16 +10,19 @@ import {
   ListItemText,
   Snackbar,
   TextField,
-  Typography,
-} from '@mui/material';
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Divider,
+} from '@mui/material'; // Keep this for other components
+import Typography from '@mui/joy/Typography'; // Updated import for Typography
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext';
 import timerSound from '../assets/timersound.wav';
-
-// Import the background image
-import backgroundImage from '../assets/asas.gif';
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 
 const Timer = () => {
   const { user } = useUser();
@@ -32,11 +35,14 @@ const Timer = () => {
   const [initialDurations, setInitialDurations] = useState({});
   const [alertOpen, setAlertOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [open, setOpen] = useState(false);
+  const [timerToDelete, setTimerToDelete] = useState(null);
+  const [openConfirmUpdate, setOpenConfirmUpdate] = useState(false);
 
   useEffect(() => {
     if (!user) {
       console.error('User is not available');
-      navigate('/login');
+      navigate('/loginv2');
       return;
     }
   
@@ -113,14 +119,18 @@ const Timer = () => {
     setIsEditing(true);
   };
 
-  const handleUpdateTimer = async () => {
+  const handleUpdateTimer = () => {
+    setOpenConfirmUpdate(true); 
+  };
+
+  const handleConfirmUpdate = async () => {
     const totalSeconds = form.hours * 3600 + form.minutes * 60 + form.seconds;
     try {
       const response = await axios.put(`http://localhost:8080/api/timer/putTimer?id=${form.timerId}`, {
         user: {
           username: user.username,
           email: user.email,
-          password: user.password, 
+          password: user.password,
           occupation: user.occupation,
         },
         duration: totalSeconds,
@@ -130,26 +140,36 @@ const Timer = () => {
       setIsEditing(false);
     } catch (error) {
       console.error('Error updating timer:', error.response ? error.response.data : error.message);
+    } finally {
+      setOpenConfirmUpdate(false); // Close the confirmation modal
     }
   };
 
-  const handleDeleteTimer = async (timerId) => {
-    try {
-      await axios.delete(`http://localhost:8080/api/timer/deleteTimer/${timerId}`);
-      
-      setTimers((prevTimers) => prevTimers.filter(timer => timer.timerId !== timerId));
+  const handleCloseConfirmUpdate = () => {
+    setOpenConfirmUpdate(false); // Close the confirmation modal without action
+  };
+
+  const handleDeleteTimer = async () => {
+    if (timerToDelete) {
+      try {
+        await axios.delete(`http://localhost:8080/api/timer/deleteTimer/${timerToDelete}`);
+        
+        setTimers((prevTimers) => prevTimers.filter(timer => timer.timerId !== timerToDelete));
   
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+        }
+        
+        console.log(`Timer with ID ${timerToDelete} deleted successfully.`);
+      } catch (error) {
+        const errorMessage = error.response?.data || error.message;
+        console.error(`Error deleting timer: ${errorMessage}`);
+      } finally {
+        setOpen(false); // Close the modal after deletion
+        setTimerToDelete(null); // Reset the timer ID
       }
-      
-      console.log(`Timer with ID ${timerId} deleted successfully.`);
-    } catch (error) {
-      const errorMessage = error.response?.data || error.message;
-      console.error(`Error deleting timer: ${errorMessage}`);
     }
   };
-  
 
   const startCountdown = (timerId) => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -185,21 +205,10 @@ const Timer = () => {
   const pauseCountdown = async (timerId) => {
     if (intervalRef.current) clearInterval(intervalRef.current);
   
-    // Find the timer that is being paused
-
-
-
-
-
-
-
-
-    
     const timer = timers.find(timer => timer.timerId === timerId);
     if (!timer) return;
   
     try {
-      // Update the timer's duration in the database
       await axios.put(`http://localhost:8080/api/timer/putTimer?id=${timerId}`, {
         user: {
           username: user.username,
@@ -232,21 +241,20 @@ const Timer = () => {
   };
 
   const handleCancelUpdate = () => {
-    setForm({ hours: 0, minutes: 0, seconds: 0, timerId: null });
-    setIsEditing(false);
+    if (isEditing) {
+      // If editing, just reset the form
+      setForm({ hours: 0, minutes: 0, seconds: 0, timerId: null });
+      setIsEditing(false);
+    }
   };
 
   return (
     <Box
       p={4}
       sx={{
-        // backgroundImage: `url(${backgroundImage})`,
-        // backgroundSize: 'cover',
         backgroundPosition: 'center',
         borderRadius: 3,
-        height: '90vh',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-        border: '1px solid #ddd',
+        height: '80vh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -254,35 +262,14 @@ const Timer = () => {
         gap: 2,
       }}
     >
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{
-          color: '#00796b',
-          textShadow: '2px 2px #004d40',
-          backgroundColor: 'rgba(224, 247, 250, 0.8)',
-          width: 'max-content',
-        }}
-      >
-        TaskSync Timer
+      <Typography level="h4" gutterBottom sx={{ width: 'max-content' }}>
+        Study Timer 📚
       </Typography>
-      <Typography
-        variant="h6"
-        gutterBottom
-        sx={{
-          width: 'max-content',
-          color: '#00796b',
-          backgroundColor: 'rgba(224, 247, 250, 0.8)',
-          textShadow: '1px 1px #004d40',  
-        }}
-      >
-        👋 Hello, {user.username}!
-      </Typography>
+
       {user ? (
         <>
           <Grid container spacing={4} sx={{ width: '100%', maxWidth: '800px', margin: '0 auto' }}>
-            <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid #ddd', borderRadius: 2, padding: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', backgroundColor: '#e0f7fa' }}>
-
+            <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid #ddd', borderRadius: 2, padding: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'}}>
               <Box display="flex" alignItems="center" gap={2} mb={2}>
                 <TextField
                   label="Hours"
@@ -350,12 +337,11 @@ const Timer = () => {
               </Box>
               <Box display="flex" gap={2}>
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   sx={{
-                    backgroundColor: '#00796b',
-                    color: '#fff',
+                    borderColor: '#00796b',
                     '&:hover': {
-                      backgroundColor: '#004d40',
+                      borderColor: '#004d40',
                     },
                   }}
                   onClick={isEditing ? handleUpdateTimer : handleCreateTimer}
@@ -366,7 +352,7 @@ const Timer = () => {
                   <Button
                     variant="outlined"
                     sx={{
-                      color: '#00796b',
+                      
                       borderColor: '#00796b',
                       '&:hover': {
                         borderColor: '#004d40',
@@ -387,27 +373,23 @@ const Timer = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   height: '100%',
-                  backgroundColor: '#e0f7fa',
                   borderRadius: 2,
                   padding: 2,
                   boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                 }}
               >
                 <Typography
-                  variant="h6"
+                  level="h6"
                   sx={{
-                    color: '#00796b',
-                    textShadow: '1px 1px #004d40',
-                    backgroundColor: 'rgba(224, 247, 250, 0.8)',
+                    backgroundShadow: '0 2px 4px rgba(0, 0, 0, 1)',
                   }}
                 >
                   Current Time
                 </Typography>
                 <Typography
-                  variant="h4"
+                  level="h4"
                   sx={{
                     color: '#004d40',
-                    fontFamily: 'monospace',
                   }}
                 >
                   {currentTime.toLocaleTimeString()}
@@ -416,26 +398,12 @@ const Timer = () => {
             </Grid>
           </Grid>
 
-          <Typography
-            variant="h5"
-            mt={4}
-            sx={{
-              color: 'black',
-              textShadow: '1px 1px #004d40',
-              width: 'max-content',
-              backgroundColor: '#fff',
-              textDecoration: 'underline',
-              textDecorationColor: '#004d40',
-              borderBottom: '1px solid #004d40',
-            }}
-          >
-            Study Timer 📚
-          </Typography>
+
           <List
             sx={{
+              marginTop: 4,
               minHeight: '300px',
               overflow: 'auto',
-              backgroundColor: 'rgba(224, 247, 250, 0.8)',
               borderRadius: 2,
               width: '80%',
               boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
@@ -460,8 +428,11 @@ const Timer = () => {
                   }}
                 >
                   <ListItemText
-                    primary={`Time Remaining: ${formatTime(timer.duration)}`}
-                    sx={{ color: '#333' }}
+                    primary={
+                      <Typography level="body1" >
+                        Time Remaining: {formatTime(timer.duration)}
+                      </Typography>
+                    }
                   />
                   {timer.timerId === playingTimerId && (
                     <LinearProgress
@@ -481,7 +452,7 @@ const Timer = () => {
                   <IconButton color="secondary" onClick={() => handleEditTimer(timer)}>
                     <Edit />
                   </IconButton>
-                  <IconButton color="error" onClick={() => handleDeleteTimer(timer.timerId)}>
+                  <IconButton color="error" onClick={() => { setTimerToDelete(timer.timerId); setOpen(true); }}>
                     <Delete />
                   </IconButton>
                   <IconButton color="primary" onClick={() => startCountdown(timer.timerId)}>
@@ -496,13 +467,7 @@ const Timer = () => {
           </List>
         </>
       ) : (
-        <Typography
-          variant="h6"
-          color="error"
-          sx={{
-            fontFamily: '"Comic Sans MS", cursive, sans-serif',
-          }}
-        >
+        <Typography level="h6" color="error" sx={{ }}>
           Please log in to manage timers.
         </Typography>
       )}
@@ -518,6 +483,46 @@ const Timer = () => {
           </Button>
         }
       />
+
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>
+          Confirmation
+        </DialogTitle>
+        <Divider />
+        <DialogContent>
+          <Typography level="body1" sx={{ fontFamily: 'YourDesiredFont, sans-serif', fontSize: '16px' }}>
+              Are you sure you want to discard this timer?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" color="error" onClick={handleDeleteTimer}>
+            Discard Timer
+          </Button>
+          <Button variant="outlined" color="neutral" onClick={() => setOpen(false)}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openConfirmUpdate} onClose={handleCloseConfirmUpdate}>
+        <DialogTitle>
+          Confirm Update
+        </DialogTitle>
+        <Divider />
+        <DialogContent>
+          <Typography level="body1" sx={{ fontFamily: 'YourDesiredFont, sans-serif', fontSize: '16px' }}>
+            Are you sure you want to proceed with the update?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="contained" color="primary" onClick={handleConfirmUpdate}>
+            Update
+          </Button>
+          <Button variant="outlined" color="neutral" onClick={handleCloseConfirmUpdate}>
+            No
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

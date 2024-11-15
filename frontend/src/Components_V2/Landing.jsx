@@ -159,7 +159,7 @@ function DashboardLayoutBranding() {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: '100%' }}>
       <Sidebar onNavigate={handleNavigation} />
       <Box sx={{ flexGrow: 1 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', padding: 2 }}>
