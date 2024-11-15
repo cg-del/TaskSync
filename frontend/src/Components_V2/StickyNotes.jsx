@@ -14,6 +14,8 @@ import DialogContent from '@mui/joy/DialogContent';
 import DialogActions from '@mui/joy/DialogActions';
 import FormControl from '@mui/joy/FormControl';
 import Typography from '@mui/joy/Typography';
+import Divider from '@mui/material/Divider';
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded'; // Add this line
 
 export default function StickyNotes() {
   const { user } = useUser();
@@ -112,25 +114,23 @@ export default function StickyNotes() {
 
       {/* Delete Confirmation Modal */}
       <Modal open={openDeleteConfirmation} onClose={handleCancelDelete}>
-          <ModalDialog variant="outlined" role="alertdialog" sx={{ borderRadius: 4 }}>
-              <DialogTitle sx={{ fontWeight: 'bold', fontSize: '1.5rem' }}>Delete Task</DialogTitle>
-              <DialogContent>
-                  <Typography sx={{ marginBottom: 2 }}>Are you sure you want to delete this note?</Typography>
-              </DialogContent>
-              <DialogActions 
-                sx={{ 
-                  display: 'flex', 
-                  justifyContent: 'flex-end'
-                  }}
-                > {/* Align buttons to the right */}
-                  <Button variant="outlined" color="neutral" onClick={handleCancelDelete} sx={{ marginRight: 1 }}>
-                      Cancel
-                  </Button>
-                  <Button variant="outlined" color="danger" onClick={handleDelete} sx={{ borderColor: 'red', color: 'red' }}>
-                      Delete
-                  </Button>
-              </DialogActions>
-          </ModalDialog>
+        <ModalDialog variant="outlined" role="alertdialog" sx={{ borderRadius: 4 }}>
+          <DialogTitle>
+              Delete Task
+          </DialogTitle>
+          <Divider />
+          <DialogContent>
+              <Typography>Are you sure you want to delete this task?</Typography>
+          </DialogContent>
+          <DialogActions sx={{ display: 'flex', justifyContent: 'centers' }}>
+            <Button variant="contained" color="error" onClick={handleDelete}>
+                Delete
+            </Button>
+            <Button variant="outlined" color="neutral" onClick={handleCancelDelete}>
+                Cancel
+            </Button>
+        </DialogActions>
+        </ModalDialog>
       </Modal>
 
       {/* Add Task Modal */}
@@ -152,9 +152,10 @@ export default function StickyNotes() {
             </IconButton>
           </DialogTitle>
           <DialogContent>
-            <p style={{ margin: '0 0 10px' }}>
-              {editingNoteId ? 'Edit your note to update any details here' : 'Add your note, reminder, or thought here'}</p> {/* Description */}
-              <FormControl sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Typography variant="body2" sx={{ margin: '0 0 10px' }}>
+              {editingNoteId ? 'Edit your note to update any details here' : 'Add your note, reminder, or thought here'}
+            </Typography>
+            <FormControl sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <textarea
                 placeholder="Type your note here..."
                 value={newNoteContent}
@@ -186,23 +187,30 @@ export default function StickyNotes() {
         {notes.map((note) => (
           <Box key={note.noteId} sx={{
             backgroundColor: '#ffeb3b', //yellow //extra color #ffda33
-            padding: '28px 10px 10px',
+            padding: '40px 10px 10px',
             width: '250px',
-            height: '250px', // size sa stickynote
+            height: '280px', // size sa stickynote
             borderRadius: 2,
             boxShadow: '0 6px 10px rgba(0, 0, 0, 0.4)',
-            fontSize: '18px',
             position: 'relative',
             overflow: 'hidden',
           }}>
+            <Divider sx={{ marginBottom: 1 }} /> {/* Divider added here */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', whiteSpace: 'pre-wrap', overflowWrap: 'break-word', }}>
-              <span>{note.content}</span>
+              <Typography variant="body1" sx={{
+                wordWrap: 'break-word',
+                flex: 1,
+                fontSize: '18px',
+                color: 'black'
+              }}>
+                {note.content}
+              </Typography>
               <div>
-                <IconButton onClick={() => handleEdit(note)} sx={{ position: 'absolute', top: -6, right: 20, color: 'primary.main' }}>
-                  <EditIcon fontSize="default" />
+                <IconButton onClick={() => handleEdit(note)} sx={{ position: 'absolute', top: -4, right: 35, color: 'primary.main' }}>
+                  <EditIcon fontSize="large" />
                 </IconButton>
-                <IconButton onClick={() => openDeleteConfirmationModal(note.noteId)} sx={{ position: 'absolute', top: -6, right: -5, color: 'red' }}>
-                  <DeleteIcon fontSize="default" />
+                <IconButton onClick={() => openDeleteConfirmationModal(note.noteId)} sx={{ position: 'absolute', top: -4, right: -3, color: 'red' }}>
+                  <DeleteIcon fontSize="large" />
                 </IconButton>
               </div>
             </div>
