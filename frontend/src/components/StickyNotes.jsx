@@ -107,7 +107,7 @@ export default function StickyNotes() {
   };
 
   return (
-    <Box sx={{ width: '100%', padding: 2 }}>
+    <Box sx={{ width: '95%', padding: 2 }}>
       <Button variant="contained" onClick={() => setOpenAddTaskModal(true)}>
         Add Note
       </Button>

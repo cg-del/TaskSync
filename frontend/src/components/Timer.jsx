@@ -42,7 +42,7 @@ const Timer = () => {
   useEffect(() => {
     if (!user) {
       console.error('User is not available');
-      navigate('/loginv2');
+      navigate('/login');
       return;
     }
   
@@ -254,7 +254,7 @@ const Timer = () => {
       sx={{
         backgroundPosition: 'center',
         borderRadius: 3,
-        height: '80vh',
+        width: '90%',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -268,7 +268,7 @@ const Timer = () => {
 
       {user ? (
         <>
-          <Grid container spacing={4} sx={{ width: '100%', maxWidth: '800px', margin: '0 auto' }}>
+          <Grid container spacing={4} sx={{ width: '100%', maxWidth: '70%', margin: '0 auto' }}>
             <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid #ddd', borderRadius: 2, padding: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'}}>
               <Box display="flex" alignItems="center" gap={2} mb={2}>
                 <TextField

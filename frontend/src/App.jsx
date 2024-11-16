@@ -1,16 +1,13 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
-import Landing from './Components_V2/Landing';
-import Loginv2 from './Components_V2/Login';
-import Signupv2 from './Components_V2/Signup';
-import Notes from './Components_V2/StickyNotes';
-import Task from './Components_V2/Task';
-import Calendar from './Components_V2/TaskCalendar';
+import Landing from './components/Landing';
+import Login from './components/Login';
+import Signup from './components/Signup';
+import Notes from './components/StickyNotes';
+import Task from './components/Task';
+import Calendar from './components/TaskCalendar';
 
-
-
-import Home from './components/Home';
 
 import Timer from './components/Timer';
 import { UserProvider } from './UserContext';
@@ -20,15 +17,13 @@ function App() {
     <UserProvider> 
       <Router>
         <Routes>
-          {/* <Route path="/" element={<Home />} /> */}
-          
           <Route path="/" element={<Landing />} />
           <Route path="/Notes" element={<Notes />} />
           <Route path="/Task" element={<Task />} />
           <Route path="/timers" element={<Timer />} />
           <Route path="/Calendar" element={<Calendar />} />
-          <Route path="/Loginv2" element={<Loginv2 />} />
-          <Route path="/Signupv2" element={<Signupv2 />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/Signup" element={<Signup />} />
         </Routes>
       </Router>
     </UserProvider>
