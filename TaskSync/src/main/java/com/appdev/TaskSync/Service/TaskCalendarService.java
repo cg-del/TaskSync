@@ -62,4 +62,8 @@ public class TaskCalendarService {
     public List<TaskCalendarEntity> getTasksByDate(LocalDate date) {
         return taskCalendarRepo.findByDate(date);
     }
+
+    public List<TaskCalendarEntity> getTasksByDateRange(int userId, LocalDate startDate, LocalDate endDate) {
+        return taskCalendarRepo.findByUser_UserIdAndDateBetween(userId, startDate, endDate);
+    }
 }

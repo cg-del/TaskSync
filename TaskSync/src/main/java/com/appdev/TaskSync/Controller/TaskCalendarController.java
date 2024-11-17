@@ -7,7 +7,6 @@ import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.config.Task;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.appdev.TaskSync.Entity.TaskCalendarEntity;
-import com.appdev.TaskSync.Entity.TaskEntity;
 import com.appdev.TaskSync.Entity.UserEntity;
 import com.appdev.TaskSync.Repository.UserRepository;
 import com.appdev.TaskSync.Service.TaskCalendarService;
@@ -62,6 +60,15 @@ public class TaskCalendarController {
     public List<TaskCalendarEntity> getTasksByDate(@RequestParam String date) {
         LocalDate parsedDate = LocalDate.parse(date);
         return taskCalendarService.getTasksByDate(parsedDate);
+    }
+
+    @GetMapping("/getTasksByDateRange")
+    public ResponseEntity<List<TaskCalendarEntity>> getTasksByDateRange(
+            @RequestParam("userId") int userId, 
+            @RequestParam("startDate") LocalDate startDate, 
+            @RequestParam("endDate") LocalDate endDate) {
+        List<TaskCalendarEntity> tasks = taskCalendarService.getTasksByDateRange(userId, startDate, endDate);
+        return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
     @PutMapping("/updateTaskCal")

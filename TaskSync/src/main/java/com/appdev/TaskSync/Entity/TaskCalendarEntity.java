@@ -27,7 +27,7 @@ public class TaskCalendarEntity {
     @JsonBackReference
     private UserEntity user;
 
-    @Column(name = "task_description", nullable = false) // Ensure the column name matches the database schema
+    @Column(name = "task_description", nullable = false) 
     private String taskDescription;
 
     @Column(nullable = false)

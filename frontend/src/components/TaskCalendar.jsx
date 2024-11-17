@@ -15,6 +15,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
+import "../css/Calendar.css";
+import Modal from '@mui/joy/Modal';
+import ModalDialog from '@mui/joy/ModalDialog';
+import Divider from '@mui/joy/Divider';
 
 export default function TaskCalendar() {
   const { user } = useUser();
@@ -23,20 +27,16 @@ export default function TaskCalendar() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [openConfirmation, setOpenConfirmation] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState(null);
 
   const taskColors = [
-    '#ffd54f', // Light Yellow
-    '#ff8a80', // Light Red
-    '#80deea', // Light Cyan
-    '#b388ff', // Light Purple
-    '#c5e1a5', // Light Green
-    '#ffcc80', // Light Orange
-    '#e1bee7'  // Light Pink
+    '#ffd54f', '#ff8a80', '#80deea', '#b388ff', '#c5e1a5', '#ffcc80', '#e1bee7'
   ];
 
   const formatDateString = (date) => {
     const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
-    return utcDate.toISOString().split('T')[0]; // Format date as 'YYYY-MM-DD'
+    return utcDate.toISOString().split('T')[0]; 
   };
   
   useEffect(() => {
@@ -46,16 +46,15 @@ export default function TaskCalendar() {
           const response = await axios.get(`http://localhost:8080/api/taskcalendar/getTasksByUser?userId=${user.userId}`);
           const parsedTasks = response.data.map(row => ({
             ...row,
-            date: formatDateString(new Date(row.date)) 
+            date: formatDateString(new Date(row.date))
           }));
+
+          // Sort tasks by date ASC
+          parsedTasks.sort((a, b) => new Date(a.date) - new Date(b.date));
+
           setRows(parsedTasks);
         } catch (error) {
           console.error('Error fetching tasks:', error.response?.data || error.message);
-          console.error('Error details:', {
-            status: error.response?.status,
-            statusText: error.response?.statusText,
-            data: error.response?.data,
-          });
         }
       } else {
         console.log('No user logged in');
@@ -64,7 +63,19 @@ export default function TaskCalendar() {
   
     fetchAllTasks();
   }, [user]);
-  
+
+  useEffect(() => {
+    console.log('Current tasks:', rows);
+  }, [rows]);
+
+  const groupTasksByDate = (tasks) => {
+    return tasks.reduce((acc, task) => {
+      (acc[task.date] = acc[task.date] || []).push(task);
+      return acc;
+    }, {});
+  };
+
+  const groupedTasks = groupTasksByDate(rows);
 
   const handleAddTask = async () => {
     if (!user) {
@@ -80,7 +91,13 @@ export default function TaskCalendar() {
 
     try {
       const response = await axios.post('http://localhost:8080/api/taskcalendar/addTaskCal', taskData);
-      setRows(prevRows => [...prevRows, { ...response.data, date: formatDateString(new Date(response.data.date)) }]);
+      setRows(prevRows => {
+        const updatedRows = [...prevRows, { ...response.data, date: formatDateString(new Date(response.data.date)) }];
+        
+        // Sort tasks by date ASC after adding new task
+        updatedRows.sort((a, b) => new Date(a.date) - new Date(b.date));
+        return updatedRows;
+      });
       resetForm();
     } catch (error) {
       console.error('Error adding task:', error.response?.data || error.message);
@@ -101,7 +118,13 @@ export default function TaskCalendar() {
 
     try {
       const response = await axios.put(`http://localhost:8080/api/taskcalendar/updateTaskCal?calendarId=${editingTask.calendarId}`, taskData);
-      setRows(prevRows => prevRows.map(row => (row.calendarId === editingTask.calendarId ? { ...response.data, date: formatDateString(new Date(response.data.date)) } : row)));
+      setRows(prevRows => {
+        const updatedRows = prevRows.map(row => (row.calendarId === editingTask.calendarId ? { ...response.data, date: formatDateString(new Date(response.data.date)) } : row));
+        
+        // Sort tasks by date ASC after updating task
+        updatedRows.sort((a, b) => new Date(a.date) - new Date(b.date));
+        return updatedRows;
+      });
       resetForm();
     } catch (error) {
       console.error('Error updating task:', error.response?.data || error.message);
@@ -142,60 +165,126 @@ export default function TaskCalendar() {
     
     try {
       await axios.delete(`http://localhost:8080/api/taskcalendar/deleteTaskCal/${calendarId}`);
-      setRows(prevRows => prevRows.filter(row => row.calendarId !== calendarId));
+      setRows(prevRows => {
+        const updatedRows = prevRows.filter(row => row.calendarId !== calendarId);
+        
+        // Sort tasks by date ASC after deleting task
+        updatedRows.sort((a, b) => new Date(a.date) - new Date(b.date));
+        return updatedRows;
+      });
     } catch (error) {
       console.error('Error deleting task:', error.response?.data || error.message);
     }
   };
 
+  const openDeleteConfirmation = (calendarId) => {
+    setTaskToDelete(calendarId);
+    setOpenConfirmation(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (taskToDelete) {
+      handleDeleteTask(taskToDelete);
+      setOpenConfirmation(false);
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setOpenConfirmation(false);
+  };
+
   const tileClassName = ({ date }) => {
     const calendarDate = formatDateString(date);
-    return rows
+    const taskClasses = rows
       .filter(row => row.date === calendarDate)
       .map((task, index) => `task-highlight-${index % taskColors.length}`)
       .join(' ');
+
+    const className = taskClasses + (taskClasses ? ' has-tasks' : ' no-tasks');
+    console.log(`Date: ${calendarDate}, Classes: ${className}`);
+    return className;
+  };
+
+  const formatDateWithDay = (date) => {
+    const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+    return new Date(date).toLocaleDateString('en-US', options);
   };
 
   return (
     <Box sx={{ display: 'flex', gap: 4 }}>
-      <Calendar
-        onChange={setSelectedDate}
-        value={selectedDate}
-        onClickDay={(date) => setSelectedDate(date)}
-        locale="en-US"
-        tileClassName={tileClassName}
-        firstDayOfWeek={0}
-      />
+      <div style={{ flexShrink: 0, maxHeight: '500px', overflowY: 'auto' }}>
+        <Calendar
+          onChange={setSelectedDate}
+          value={selectedDate}
+          onClickDay={(date) => setSelectedDate(date)}
+          locale="en-US"
+          tileClassName={tileClassName}
+          firstDayOfWeek={0}
+        />
+      </div>
+
       <Box sx={{ flex: 1 }}>
         <Typography variant="h4">Tasks</Typography>
-        <Button onClick={() => handleDialogOpen()}>
-          <Add /> Add Task
+        <Button
+          variant="outlined"
+          color="neutral"
+          startDecorator={<Add />}
+          onClick={() => handleDialogOpen()}
+        >
+          Add Task
         </Button>
-        <Table>
-          <thead>
-            <tr>
-              <th>Task Description</th>
-              <th>Date</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.calendarId || row.taskDescription}>
-                <td>{row.taskDescription}</td>
-                <td>{row.date}</td>
-                <td>
-                  <Button onClick={() => handleDialogOpen(row)}>
-                    <Edit /> Edit
-                  </Button>
-                  <Button onClick={() => handleDeleteTask(row.calendarId)}>
-                    <Delete /> Delete
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        {Object.keys(groupedTasks).map((date) => (
+          <div key={date}>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                marginTop: 2, 
+                color: '#1976d2',  // Blue color
+                fontWeight: 'bold'
+              }}
+            >
+              {formatDateWithDay(date)}
+            </Typography>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Task Description</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {groupedTasks[date].map((task) => (
+                  <tr key={task.calendarId}>
+                    <td>{task.taskDescription}</td>
+                    <td>
+                      <Button
+                        variant="outlined"
+                        startDecorator={<Edit />}
+                        onClick={() => handleDialogOpen(task)}
+                        sx={{ marginRight: 1 }}
+                      >
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        startDecorator={<Delete />}
+                        onClick={() => openDeleteConfirmation(task.calendarId)}
+                        sx={{
+                          borderColor: 'red',
+                          color: 'red',
+                          textTransform: 'none',
+                        }}
+                      >
+                        Delete
+                      </Button>
+                      
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+        ))}
         <Dialog open={dialogOpen} onClose={resetForm}>
           <DialogTitle>{editingTask ? 'Edit Task' : 'Add Task'}</DialogTitle>
           <DialogContent>
@@ -217,41 +306,52 @@ export default function TaskCalendar() {
               variant="outlined"
               value={formatDateString(selectedDate)}
               onChange={(e) => setSelectedDate(new Date(e.target.value))}
-              InputLabelProps={{
-                shrink: true,
-              }}
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={resetForm}>Cancel</Button>
-            <Button onClick={handleDialogSubmit}>{editingTask ? 'Update' : 'Add'}</Button>
+            <Button onClick={resetForm} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleDialogSubmit} color="primary">
+              Submit
+            </Button>
           </DialogActions>
         </Dialog>
       </Box>
 
-      <style jsx>{`
-        .task-highlight-0 {
-          background-color: #ffd54f; /* Light Yellow */
-        }
-        .task-highlight-1 {
-          background-color: #ff8a80; /* Light Red */
-        }
-        .task-highlight-2 {
-          background-color: #80deea; /* Light Cyan */
-        }
-        .task-highlight-3 {
-          background-color: #b388ff; /* Light Purple */
-        }
-        .task-highlight-4 {
-          background-color: #c5e1a5; /* Light Green */
-        }
-        .task-highlight-5 {
-          background-color: #ffcc80; /* Light Orange */
-        }
-        .task-highlight-6 {
-          background-color: #e1bee7; /* Light Pink */
-        }
-      `}</style>
+      <Modal open={openConfirmation} onClose={handleCancelDelete}>
+        <ModalDialog variant="outlined" role="alertdialog">
+          <DialogTitle>Delete Task</DialogTitle>
+          <Divider />
+          <DialogContent>
+            Are you sure you want to delete this task?
+          </DialogContent>
+          <DialogActions sx={{ display: 'flex', justifyContent: 'flex-end'}}>
+            <Button
+              variant="plain"
+              color="neutral"
+              onClick={handleCancelDelete}
+              sx={{ textTransform: 'none', paddingLeft: 0, paddingRight: 0 }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="outlined"
+              color="danger"
+              onClick={handleConfirmDelete}
+              sx={{
+                borderColor: 'red',
+                color: 'red',
+                textTransform: 'none',
+                marginLeft: 20,
+              }}
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </ModalDialog>
+      </Modal>
     </Box>
   );
 }
+  

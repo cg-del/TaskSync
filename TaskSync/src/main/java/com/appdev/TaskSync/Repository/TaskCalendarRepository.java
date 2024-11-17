@@ -14,4 +14,8 @@ public interface TaskCalendarRepository extends JpaRepository<TaskCalendarEntity
     List<TaskCalendarEntity> findByUser_UserId(int userId);
 
     List<TaskCalendarEntity> findByDate(LocalDate date);
+
+    List<TaskCalendarEntity> findByUser_UserIdAndDateBetween(int userId, LocalDate startDate, LocalDate endDate);
+
 }
+
