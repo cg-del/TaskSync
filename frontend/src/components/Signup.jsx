@@ -11,6 +11,8 @@ import {
   Link,
   OutlinedInput,
   Typography,
+  Select,
+  MenuItem,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { AppProvider } from '@toolpad/core/AppProvider';
@@ -18,6 +20,8 @@ import * as React from 'react';
 import axios from 'axios'; // Import axios
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { useUser } from '../UserContext'; // Import useUser
+import { useState } from 'react'; // Ensure useState is imported
+import logo from '../assets/logo.png'; // Adjust the path to your logo image
 
 export default function CustomSignUp({ toggleAuth }) {
   const theme = useTheme();
@@ -32,10 +36,15 @@ export default function CustomSignUp({ toggleAuth }) {
   });
   const [error, setError] = React.useState(''); // State for error message
   const [success, setSuccess] = React.useState(''); // State for success message
+  const [confirmPassword, setConfirmPassword] = React.useState(''); // State for confirm password
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    if (name === 'confirmPassword') {
+      setConfirmPassword(value); // Update confirm password state
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);
@@ -48,6 +57,20 @@ export default function CustomSignUp({ toggleAuth }) {
     e.preventDefault();
     setError(''); // Reset error message
     setSuccess(''); // Reset success message
+
+    // Validate password and confirm password
+    if (formData.password !== confirmPassword) {
+      setError('Passwords do not match.'); // Set error message if passwords do not match
+      return;
+    }
+
+    // Password validation
+    const passwordValidation = /^(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/; // At least 8 characters, at least one special character
+    if (!passwordValidation.test(formData.password)) {
+      setError('Password must be at least 8 characters long and contain at least one special character.'); // Set error message for password validation
+      return;
+    }
+
     try {
       const response = await axios.post('http://localhost:8080/api/user/signup', formData);
       console.log('Response data:', response.data); // Log the response data
@@ -60,7 +83,8 @@ export default function CustomSignUp({ toggleAuth }) {
         password: '',
         occupation: '',
       });
-      navigate('/'); // Redirect to home page after successful signup
+      setConfirmPassword(''); // Clear confirm password field
+      navigate('/Home'); // Redirect to home page after successful signup
     } catch (err) {
       console.error('Signup error:', err); // Log the error for debugging
       if (err.response) {
@@ -90,22 +114,24 @@ export default function CustomSignUp({ toggleAuth }) {
             display: 'flex',
             flexDirection: 'column',
             maxWidth: 400,
-            padding: 3,
-            borderRadius: '8px',
+            padding: 4, // Increased padding for a modern look
+            borderRadius: '12px', // Match the border radius with login
             backgroundColor: 'white',
-            border: 'none', // Make border invisible
+            boxShadow: 3, // Add shadow for a modern look
           }}
         >
-          <Typography variant="h4" component="h1" align="left" gutterBottom>
+          <img src={logo} alt="Logo" style={{ height: '60px', marginBottom: '20px', alignSelf: 'center' }} />
+
+          <Typography variant="h4" component="h1" align="center" gutterBottom>
             Sign Up
           </Typography>
 
-          <Typography variant="body1" align="left" sx={{ mb: 2 }}>
+          <Typography variant="body1" align="center" sx={{ mb: 2 }}>
             Welcome user!
           </Typography>
 
-          {error && <Typography color="error">{error}</Typography>} {/* Display error message */}
-          {success && <Typography color="success">{success}</Typography>} {/* Display success message */}
+          {error && <Typography color="error" align="center">{error}</Typography>}
+          {success && <Typography color="success" align="center">{success}</Typography>}
 
           <FormControl sx={{ my: 1 }} fullWidth variant="outlined">
             <InputLabel size="small" htmlFor="outlined-adornment-name">
@@ -170,24 +196,73 @@ export default function CustomSignUp({ toggleAuth }) {
           </FormControl>
 
           <FormControl sx={{ my: 1 }} fullWidth variant="outlined">
+            <InputLabel size="small" htmlFor="outlined-adornment-confirm-password">
+              Confirm Password
+            </InputLabel>
+            <OutlinedInput
+              id="outlined-adornment-confirm-password"
+              type={showPassword ? 'text' : 'password'}
+              name="confirmPassword"
+              size="small"
+              onChange={handleChange}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    size="small"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+              label="Confirm Password"
+            />
+          </FormControl>
+
+          <FormControl sx={{ my: 1 }} fullWidth variant="outlined">
             <InputLabel size="small" htmlFor="outlined-adornment-occupation">
               Occupation
             </InputLabel>
-            <OutlinedInput
+            <Select
               id="outlined-adornment-occupation"
-              label="Occupation"
               name="occupation"
-              type="text"
-              size="small"
-              required
+              value={formData.occupation}
               onChange={handleChange}
-            />
+              size="small"
+              label="Occupation"
+            >
+              <MenuItem value=""><em>None</em></MenuItem>
+              <MenuItem value="accountant">Accountant</MenuItem>
+              <MenuItem value="architect">Architect</MenuItem>
+              <MenuItem value="consultant">Consultant</MenuItem>
+              <MenuItem value="designer">Graphic Designer</MenuItem>
+              <MenuItem value="doctor">Doctor</MenuItem>
+              <MenuItem value="electrician">Electrician</MenuItem>
+              <MenuItem value="engineer">Engineer</MenuItem>
+              <MenuItem value="lawyer">Lawyer</MenuItem>
+              <MenuItem value="manager">Project Manager</MenuItem>
+              <MenuItem value="marketing">Marketing Specialist</MenuItem>
+              <MenuItem value="nurse">Nurse</MenuItem>
+              <MenuItem value="pharmacist">Pharmacist</MenuItem>
+              <MenuItem value="plumber">Plumber</MenuItem>
+              <MenuItem value="research_scientist">Research Scientist</MenuItem>
+              <MenuItem value="sales">Sales Representative</MenuItem>
+              <MenuItem value="scientist">Scientist</MenuItem>
+              <MenuItem value="student">Student</MenuItem>
+              <MenuItem value="technician">Technician</MenuItem>
+              <MenuItem value="teacher">Teacher</MenuItem>
+              <MenuItem value="writer">Content Writer</MenuItem>
+              {/* Add more options as needed */}
+            </Select>
           </FormControl>
 
           <Button
             type="submit"
-            variant="contained" // Changed to contained for a solid button
-            color="primary" // Set button color to gray
+            variant="contained"
+            color="primary"
             size="large"
             disableElevation
             fullWidth

@@ -17,6 +17,7 @@ import axios from 'axios'; // Added axios
 import React, { useState } from 'react'; // Added useState
 import { Link as RouterLink, useNavigate } from 'react-router-dom'; // Added useNavigate
 import { useUser } from '../UserContext'; // Added useUser
+import logo from '../assets/logo.png'; // Adjusted path to your logo image
 
 function CustomEmailField({ onChange }) {
   return (
@@ -102,7 +103,7 @@ function CustomButton() {
 
 function SignUpLink() {
   return (
-    <RouterLink to="/Signupv2" style={{ textAlign: 'center', textDecoration: 'none' }}>
+    <RouterLink to="/Signup" style={{ textAlign: 'center', textDecoration: 'none' }}>
       Not registered yet? Create an account
     </RouterLink>
   );
@@ -132,7 +133,7 @@ export default function SlotsSignIn({ toggleAuth }) {
       setSuccess('Login successful!'); // Set success message
       setError(''); // Clear error message
       console.log('Login successful:', response.data);
-      navigate('/'); // Redirect to home after successful login
+      navigate('/Home'); // Redirect to home after successful login
     } catch (err) {
       setError('Login failed: ' + (err.response?.data?.message || 'Unknown error')); // Set error message
       setSuccess(''); // Clear success message
@@ -156,26 +157,28 @@ export default function SlotsSignIn({ toggleAuth }) {
           display: 'flex',
           flexDirection: 'column',
           maxWidth: 400,
-          padding: 3,
-          borderRadius: '8px',
+          padding: 4,
+          borderRadius: '12px',
           backgroundColor: 'white',
-          border: 'none', // Make border invisible
+          boxShadow: 3, // Add shadow for a modern look
         }}
       >
-        <Typography variant="h4" component="h1" align="left" gutterBottom>
+        <img src={logo} alt="Logo" style={{ height: '60px', marginBottom: '20px', alignSelf: 'center' }} />
+
+        <Typography variant="h4" component="h1" align="center" gutterBottom>
           Login
         </Typography>
-        <Typography variant="body1" align="left" sx={{ mb: 2 }}>
+        <Typography variant="body1" align="center" sx={{ mb: 2 }}>
           Hi, Welcome back
         </Typography>
-
-        {error && <Typography color="error">{error}</Typography>} 
-        {success && <Typography color="success">{success}</Typography>} 
 
         <CustomEmailField onChange={handleChange} />
         <CustomPasswordField onChange={handleChange} />
 
         <CustomButton />
+
+        {error && <Typography color="error" align="center">{error}</Typography>}
+        {success && <Typography color="success" align="center">{success}</Typography>}
 
         <SignUpLink toggleAuth={toggleAuth} />
       </Box>
