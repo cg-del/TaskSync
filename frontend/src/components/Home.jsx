@@ -7,18 +7,28 @@ import StickyNote2Icon from '@mui/icons-material/StickyNote2';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal'; // Import the Modal component
+import Button from '@mui/material/Button'; // Import Button component
+import Divider from '@mui/material/Divider'; // Import Divider component
+import DialogTitle from '@mui/material/DialogTitle'; // Import DialogTitle component
+import DialogContent from '@mui/material/DialogContent'; // Import DialogContent component
+import DialogActions from '@mui/material/DialogActions'; // Import DialogActions component
 import axios from 'axios'; 
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext'; 
-import logo from '../assets/logo.png';
+import logo1 from '../assets/logo2.png';
 
 import Notes from './StickyNotes';
 import Task from './Task';
 import TaskCalendar from './TaskCalendar';
-import Timer from './Timer'; 
+import Timer from './Timer';
+
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Import left arrow icon
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'; // Import right arrow icon
+import IconButton from '@mui/material/IconButton';
 
 const NAVIGATION = [
   {
@@ -27,12 +37,12 @@ const NAVIGATION = [
     icon: <DashboardIcon />,
   },
   {
-    segment: 'sticky-notes',
+    segment: 'sticky-Notes',
     title: 'Sticky Notes',
     icon: <StickyNote2Icon />,
   },
   {
-    segment: 'to-do-list',
+    segment: 'todo List',
     title: 'To-do List',
     icon: <ListAltIcon />,
   },
@@ -46,11 +56,7 @@ const NAVIGATION = [
     title: 'Calendar',
     icon: <CalendarTodayIcon />,
   },
-  {
-    segment: 'logout',
-    title: 'Logout',
-    icon: <LogoutIcon />,
-  },
+
 ];
 
 function DemoPageContent({ activeSegment, user }) {
@@ -59,10 +65,10 @@ function DemoPageContent({ activeSegment, user }) {
   let content;
   const greeting = user ? `Hello, ${user.username}!` : 'Hello!'; 
   switch (activeSegment) {
-    case 'to-do-list':
+    case 'todo List':
       content = <Task user={user} />; // Pass user to Task component
       break;
-    case 'sticky-notes':
+    case 'sticky-Notes':
       content = <Notes user={user} />; // Pass user to Notes component
       break;
     case 'calendar':
@@ -73,7 +79,7 @@ function DemoPageContent({ activeSegment, user }) {
       break;
     case 'board':
       content = (
-        <Typography variant="h3">
+        <Typography variant="h3" paddingTop={5} color='#134B70'>
           Welcome to TaskSync Productivity!
           <Typography variant="h6">{greeting}</Typography> 
         </Typography>
@@ -107,35 +113,88 @@ DemoPageContent.propTypes = {
   user: PropTypes.object,
 };
 
-function Sidebar({ onNavigate, activeSegment }) {
+function Sidebar({ onNavigate, activeSegment, user }) {
+  const greeting = user ? `Hello, ${user.username}!` : 'Hello!'; 
   return (
     <Box sx={{ 
-      maxWidth: '180px', 
-      minWidth: '180px',
+      maxWidth: '320px',  // Increased width
+      minWidth: '320px', 
       borderRight: '1px solid #ccc', 
       padding: 2, 
-      backgroundColor: '#f5f5f5', 
-      height: '100vh'
+      marginRight: '20px',
+      borderRadius: '0px 25px 25px 0px',
+      backgroundColor: '#1f295a', // Set to a white background for the sidebar
+      height: '95vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between' // Space between items and bottom
     }}>
-      {NAVIGATION.map((item) => (
-        <Box
-          key={item.segment}
-          sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            cursor: 'pointer', 
-            padding: 1, 
-            backgroundColor: activeSegment === item.segment ? '#e0e0e0' : 'transparent', // Highlight active segment
-            '&:hover': { backgroundColor: '#e0e0e0' } 
-          }}
-          onClick={() => onNavigate(item.segment)}
+      <Box>
+        <Box 
+          sx={{ justifyContent: 'center', alignItems: 'center', padding: 3, cursor: 'pointer'}} 
+          onClick={() => onNavigate('board')} // Navigate to the board on click
         >
-          {item.icon}
-          <Typography variant="body1" sx={{ marginLeft: 1, fontWeight: 'bold' }}>
-            {item.title}
-          </Typography>
+          <img 
+            src={logo1} 
+            alt="sync" 
+            style={{ 
+              width: '200px',  
+              maxHeight: '250px', // Set a max height to prevent stretching
+              height: 'auto', // Maintain aspect ratio
+              marginLeft: '20px' 
+            }} 
+          />
         </Box>
-      ))}
+
+        
+        {NAVIGATION.map((item) => (
+            <Box
+              key={item.segment}
+              sx={{              
+                marginTop: 1,
+                display: 'flex', 
+                alignItems: 'center', 
+                cursor: 'pointer', 
+                padding: 2, // Increased padding for better layout
+                borderRadius: '4px', // Added border radius for rounded corners
+                backgroundColor: activeSegment === item.segment ? '#4259c1' : 'transparent', // Light blue for active segment
+                color: activeSegment === item.segment ? '#eeeeee' : '#5163aa', // Dark text for active segment, gray for others
+                '&:hover': { backgroundColor: '#89CFF0', color: '#5163aa' } // Transparent light blue on hover
+              }}
+              onClick={() => onNavigate(item.segment)}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', marginRight: 1 , marginLeft: 4 }}> {/* Separate Box for the icon */}
+                {item.icon}
+              </Box>
+              <Typography variant="body1" sx={{ marginLeft: 3, fontWeight: 'bold' }}>
+                {item.title}
+              </Typography>
+            </Box>
+        ))}
+      </Box>
+
+
+      {/* Logout Button Section */}
+      <Box 
+        sx={{ 
+          marginTop: 'auto', // Pushes the logout button to the bottom
+          display: 'flex', 
+          alignItems: 'center', 
+          cursor: 'pointer', 
+          padding: 2, 
+          borderRadius: '4px', 
+          color: '#5163aa',
+          '&:hover': { backgroundColor: '#89CFF0', color: '#5163aa' } // Hover effect
+        }}
+        onClick={() => onNavigate('logout')} // Navigate to logout
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', marginRight: 1 , marginLeft: 4 }}> {/* Separate Box for the icon */}
+          <LogoutIcon />
+        </Box>
+        <Typography variant="body1" sx={{ marginLeft: 3, fontWeight: 'bold' }}>
+          Logout
+        </Typography>
+      </Box>
     </Box>
   );
 }
@@ -143,50 +202,121 @@ function Sidebar({ onNavigate, activeSegment }) {
 function DashboardLayoutBranding() {
   const navigate = useNavigate();
   const [activeSegment, setActiveSegment] = useState('board');
-  const { user, setUser } = useUser(); // Access user directly from UserContext
+  const { user, setUser } = useUser();
+  const [isModalOpen, setModalOpen] = useState(false); // State for modal visibility
 
   // Redirect to login if there is no user
   useEffect(() => {
     if (!user) {
-      navigate('/login'); // Redirect to the login page if no user is found
+      navigate('/login');
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await axios.get('http://localhost:8080/api/user');
-        setUser(response.data); // Set user data in context
-      } catch (error) {
-        console.error('Error fetching user data:', error.response ? error.response.data : error.message);
-      }
-    };
-
-    fetchUserData();
-  }, [setUser]);
+  const handleLogout = () => {
+    setUser(null);
+    navigate('/');
+  };
 
   const handleNavigation = (segment) => {
-    console.log('Navigating to:', segment); // Debugging statement
     if (segment === 'logout') {
-      setUser(null); // Clear user data
-      navigate('/'); // Redirect to the login page
+      setModalOpen(true); // Open the confirmation modal
     } else {
-      setActiveSegment(segment); // Set active segment based on navigation
+      setActiveSegment(segment);
     }
   };
 
+  // Confirmation Modal Component
+  const LogoutConfirmationModal = ({ open, onClose, onConfirm }) => {
+    return (
+      <Modal open={open} onClose={onClose}>
+        <Box sx={{ 
+          position: 'absolute', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          bgcolor: 'background.paper', 
+          boxShadow: 1, // Adjusted boxShadow to match ModalDialog
+          p: 1, // Adjusted padding for consistency
+          borderRadius: 2,
+          width: '400px', // Set a fixed width similar to ModalDialog
+        }}>
+          <DialogTitle>Confirm Logout</DialogTitle>
+          <Divider />
+          <DialogContent>
+            <Typography variant="body1"> {/* Added Typography for styling */}
+              Are you sure you want to log out?
+            </Typography>
+          </DialogContent>
+          <DialogActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              variant="outlined"
+              color="danger"
+              onClick={onConfirm}
+              sx={{
+                borderColor: 'red',
+                color: 'red',
+                textTransform: 'none',
+                marginLeft: 2, // Adjusted margin for consistency
+              }}
+            >
+              Logout
+            </Button>
+            <Button
+              variant="plain"
+              color="neutral"
+              onClick={onClose}
+              sx={{ textTransform: 'none', paddingLeft: 0, paddingRight: 0 }}
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </Box>
+      </Modal>
+    );
+  };
+
   return (
-    <Box sx={{ display: 'flex', height: '100vh', overflow: 'hidden' }}>
+    <Box sx={{ display: 'flex', height: '98.5vh', backgroundColor: '#d6e1f7', overflow: 'hidden' }}>
       <Sidebar onNavigate={handleNavigation} activeSegment={activeSegment} />
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', padding: 2 }}>
-          <img src={logo} alt="sync" style={{ height: '40px', marginRight: '10px' }} />
-          <Typography variant="h6">TaskSync</Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', padding: 3, justifyContent: 'space-between', marginTop: 1 }}>
+
+        <Typography 
+          variant="h4" 
+          sx={{ 
+            marginBottom: '16px', 
+            margin: '0 10px', 
+            fontWeight: 'bold', 
+            color: '#134B70', // Set the text color
+            minWidth: '220px' // Set a minimum width to prevent movement
+          }}
+        >
+          {activeSegment.charAt(0).toUpperCase() + activeSegment.slice(1).replace('-', ' ')} {/* Display selected segment name */}
+        </Typography>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, justifyContent: 'center', marginRight: 20 }}>
+
+          
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Typography variant="body1" sx={{ marginRight: 2, marginLeft: 3, color: '#134B70'}}>
+              {new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })} {/* Display current date in "November 21, 2024" format */}
+            </Typography>
+            <CalendarTodayIcon sx={{ marginRight: 15, color: '#134B70'}} /> {/* Added marginLeft to create space between the calendar icon and the right arrow */}
+          </Box>
+          
+
         </Box>
+      </Box>
+
         <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
           <DemoPageContent activeSegment={activeSegment} user={user} />
         </Box>
       </Box>
+      <LogoutConfirmationModal 
+        open={isModalOpen} 
+        onClose={() => setModalOpen(false)} 
+        onConfirm={handleLogout} 
+      />
     </Box>
   );
 }

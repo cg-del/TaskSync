@@ -85,7 +85,7 @@ export default function TableAlignment() {
     const taskData = {
       description: newTaskDescription,
       user: { email: user.email }, // Include user information
-  };
+    };
 
     try {
       const response = await axios.put(`http://localhost:8080/api/task/updateTask/${editingTaskId}`, taskData);
@@ -125,15 +125,12 @@ export default function TableAlignment() {
   };
 
   return (
-    <div>
-      <Typography level="h2" sx={{ marginBottom: '16px' }}>
-        To-do List
-      </Typography>
+    <Box sx={{ width: '95%', padding: 2 }}>
 
       {/* Button to trigger the Add Task Modal */}
       <Button
         variant="outlined"
-        color="neutral"
+        sx={{ borderColor: '#4259c1', color: '#4259c1' }}
         startDecorator={<Add />}
         onClick={openAddTaskModalHandler} // Use the new handler
       >
@@ -176,7 +173,6 @@ export default function TableAlignment() {
 
       {/* Add Task Modal */}
       <Modal open={openAddTaskModal} onClose={() => setOpenAddTaskModal(false)}>
-        
         <ModalDialog sx={{ maxWidth: '450px', width: '100%' }} >
           {/* Close Button */}
           <IconButton
@@ -256,43 +252,76 @@ export default function TableAlignment() {
       </Modal>
 
       {/* Tasks Table */}
-      <Table sx={{ '& tr > *:not(:first-of-type)': { textAlign: 'left' } }}>
-        <thead>
+      <Box sx={{ 
+                marginTop: 2,
+                borderRadius: '4px',
+                backgroundColor: '#dde5f8',
+              }}>
+        <Table sx={{ '& tr > *:not(:first-of-type)': { textAlign: 'left' } }}>
+          <thead>
           <tr>
-            <th>To-do</th>
-            <th>Action</th>
+            <th style={{ backgroundColor: '#4259c1', 
+                          padding: '8px', 
+                          borderRadius: '6px 0px 0px 6px', 
+                          fontWeight: 'bold', 
+                          color: '#eeeeee'
+                        }}>To-do</th> {/* Set background color for header */}
+
+            <th style={{ backgroundColor: '#4259c1', 
+                         padding: '8px', 
+                         borderRadius: '0px 6px 6px 0px', 
+                         fontWeight: 'bold', 
+                         color: '#eeeeee'
+                        }}>Action</th> {/* Set background color for header */}
           </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.taskId}>
-              <td>{row.description}</td>
-              <td>
-                <Button
-                  variant="outlined"
-                  startDecorator={<Edit />}
-                  onClick={() => handleEdit(row)}
-                  sx={{ marginRight: 1 }}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="outlined"
-                  startDecorator={<DeleteForever />}
-                  onClick={() => openDeleteConfirmation(row.taskId)}
-                  sx={{
-                    borderColor: 'red',
-                    color: 'red',
-                    textTransform: 'none',
-                  }}
-                >
-                  Delete
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.taskId}>
+                <td>
+                  <Box sx={{ 
+                    padding: 2, 
+                    borderRadius: '4px', 
+                    backgroundColor: '#dde5f8', // Background color for description box
+                  }}>
+                    {row.description}
+                  </Box>
+                </td>
+                <td>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    padding: 1, 
+                    gap: 1,
+                    borderRadius: '4px', 
+                    backgroundColor: '#dde5f8'
+                    }}> {/* Box for action buttons */}
+                    <Button
+                      variant="outlined"
+                      startDecorator={<Edit />}
+                      onClick={() => handleEdit(row)}
+                      sx={{ marginRight: 1, borderColor: '#4259c1', color: '#4259c1' }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      startDecorator={<DeleteForever />}
+                      onClick={() => openDeleteConfirmation(row.taskId)}
+                      sx={{
+                        borderColor: 'red',
+                        color: 'red',
+                        textTransform: 'none',
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </Box>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Box>
+    </Box>
   );
 }

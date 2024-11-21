@@ -250,21 +250,18 @@ const Timer = () => {
 
   return (
     <Box
-      p={4}
+      p={2}
       sx={{
         backgroundPosition: 'center',
         borderRadius: 3,
-        width: '90%',
+        width: '95%',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center',
+        alignItems: 'left',
         justifyContent: 'center',
         gap: 2,
       }}
     >
-      <Typography level="h4" gutterBottom sx={{ width: 'max-content' }}>
-        Study Timer 📚
-      </Typography>
 
       {user ? (
         <>
