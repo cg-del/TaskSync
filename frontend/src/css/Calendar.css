@@ -26,3 +26,46 @@
     border-radius: 50%; /* Make it a circle */
     z-index: 1; /* Ensure it appears above other elements */
 }
+
+.react-calendar {
+    width: 550px; /* Set the desired width */
+    height: auto; /* Set the desired height */
+    border: 1px solid #ccc; /* Add a border around the calendar */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    background-color: #fff; /* Background color */
+}
+
+.react-calendar__month-view__days__day {
+    border: 1px solid #e0e0e0; /* Light border for each day */
+    border-radius: 4px; /* Rounded corners for each day */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+}
+
+.react-calendar__month-view__days__day:hover {
+    background-color: #d3d3d3; /* Light gray background on hover */
+}
+
+/* Style for the header */
+.react-calendar__navigation {
+    background-color: #508c9b; /* Header background color */
+    color: white; /* Header text color */
+    border-radius: 8px 8px 0 0; /* Rounded corners for the header */
+}
+
+.react-calendar__navigation button {
+    color: white; /* Button text color */
+    font-weight: bold;
+}
+
+/* Style for the month title */
+.react-calendar__month-view__header {
+    font-weight: bold; /* Bold month title */
+    font-size: 1.2em; /* Increase font size */
+}
+
+/* Style for the current day */
+.react-calendar__month-view__days__day--today {
+    background-color: #508c9b; /* Highlight today's date */
+    border-radius: 50%; /* Make it circular */
+}
