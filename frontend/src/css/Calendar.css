@@ -20,10 +20,10 @@
     left: 50%;
     bottom: 5px; /* Adjust as needed */
     transform: translateX(-50%);
-    width: 8px; /* Size of the dot */
+    width: 16px; /* Size of the dot */
     height: 8px; /* Size of the dot */
     background-color: red; /* Color of the dot */
-    border-radius: 50%; /* Make it a circle */
+    border-radius: 30%; /* Make it a circle */
     z-index: 1; /* Ensure it appears above other elements */
 }
 
@@ -40,6 +40,7 @@
     border: 1px solid #e0e0e0; /* Light border for each day */
     border-radius: 4px; /* Rounded corners for each day */
     transition: background-color 0.3s; /* Smooth transition for hover effect */
+    height: 50px; /* Set the desired height */
 }
 
 .react-calendar__month-view__days__day:hover {
@@ -51,6 +52,7 @@
     background-color: #4259c1; /* Header background color */
     color: white; /* Header text color */
     border-radius: 8px 8px 0 0; /* Rounded corners for the header */
+    height: 50px; /* Set the desired height */
 }
 
 .react-calendar__navigation button {
@@ -69,3 +71,32 @@
     background-color: #508c9b; /* Highlight today's date */
     border-radius: 50%; /* Make it circular */
 }
+
+.react-calendar__tile--now {
+    background: #6577C5; 
+    color: white;
+  }
+  
+  .react-calendar__tile--now:enabled:hover,
+  .react-calendar__tile--now:enabled:focus {
+    background: #6577C5;
+  }
+  
+  .react-calendar__tile--hasActive {
+    background: #6577C5;
+  }
+  
+  .react-calendar__tile--hasActive:enabled:hover,
+  .react-calendar__tile--hasActive:enabled:focus {
+    background: #6577C5;
+  }
+  
+  .react-calendar__tile--active {
+    background: #6577C5;
+    color: white;
+  }
+  
+  .react-calendar__tile--active:enabled:hover,
+  .react-calendar__tile--active:enabled:focus {
+    background: #6577C5;
+  }

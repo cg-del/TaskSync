@@ -211,7 +211,7 @@ export default function TaskCalendar() {
   };
 
   return (
-    <Box sx={{ display: 'flex', gap: 4 }}>
+    <Box sx={{ display: 'flex', gap: 4}}>
       <div style={{ flexShrink: 0, maxHeight: '500px', overflowY: 'auto' }}>
         <Calendar
           onChange={setSelectedDate}
@@ -330,22 +330,15 @@ export default function TaskCalendar() {
         </Dialog>
       </Box>
 
-      <Modal open={openConfirmation} onClose={handleCancelDelete}>
+      <Box>
+      <Modal open={openConfirmation} onClose={handleCancelDelete} sx={{ margin: 0}}>
         <ModalDialog variant="outlined" role="alertdialog">
-          <DialogTitle>Delete Task</DialogTitle>
+        <DialogTitle sx={{ padding: '0'}}>Delete Task</DialogTitle>
           <Divider />
-          <DialogContent>
+          <DialogContent sx={{ padding: '0'}}>
             Are you sure you want to delete this task?
           </DialogContent>
           <DialogActions sx={{ display: 'flex', justifyContent: 'flex-end'}}>
-            <Button
-              variant="plain"
-              color="neutral"
-              onClick={handleCancelDelete}
-              sx={{ textTransform: 'none', paddingLeft: 0, paddingRight: 0 }}
-            >
-              Cancel
-            </Button>
             <Button
               variant="outlined"
               color="danger"
@@ -359,9 +352,18 @@ export default function TaskCalendar() {
             >
               Delete
             </Button>
+            <Button
+              variant="plain"
+              color="neutral"
+              onClick={handleCancelDelete}
+              sx={{ textTransform: 'none', paddingLeft: 0, paddingRight: 0 }}
+            >
+              Cancel
+            </Button>
           </DialogActions>
         </ModalDialog>
       </Modal>
+      </Box>
     </Box>
   );
 }

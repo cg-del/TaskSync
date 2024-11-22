@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Typography, Grid } from '@mui/material';
+import { Box, Button, Grid } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css"; 
@@ -8,29 +8,36 @@ import todolistGif from '../assets/todolist.gif';
 import stickynoteGif from '../assets/stickynote.gif';
 import timerGif from '../assets/timer.gif';
 import calendarGif from '../assets/calendar.gif';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo2.png';
+import Typography from '@mui/material/Typography';
+
+import timer from '../assets/LandingTimer.png';
+import calendar from '../assets/LandingCalendar.png';
+import notes from '../assets/LandingNotes.png';
+import task from '../assets/LandingTask.png';
 
 const carouselItems = [
   {
     title: "Sticky Notes",
     description: "Quickly jot down your thoughts and ideas with our sticky notes feature.",
-    image: stickynoteGif, 
+    image: notes, 
   },
   {
-    title: "To-Do List",
-    description: "Organize your tasks and check them off as you complete them.",
-    image: todolistGif, 
-  },
-  {
-    title: "Task Calendar",
-    description: "Plan your schedule and never miss a deadline with our task calendar.",
-    image: calendarGif, 
+    title: "To-do List",
+    description: "Organize your tasks and check them off as you complete them",
+    image: task, 
   },
   {
     title: "Timer",
-    description: "Boost your productivity with our built-in timer to manage your work sessions.",
-    image: timerGif, 
+    description: "Boost your productivity with our built-in timer to manage your study or work sessions.",
+    image: timer, 
   },
+  {
+    title: "Calendar",
+    description: "Plan your schedule and never miss a deadline with our task calendar.",
+    image: calendar, 
+  },
+
 ];
 
 export default function Landing() {
@@ -49,12 +56,12 @@ export default function Landing() {
       sx={{
         display: 'flex',
         justifyContent: 'center',
+        height: '98vh', // Full viewport height
         alignItems: 'center',
-        height: 'maxContent',
-        padding: 3,
+        backgroundImage: 'linear-gradient(45deg, #1f295a, #4259c1)',
       }}
     >
-      <Grid container spacing={4} sx={{ maxWidth: '1200px' }}>
+      <Grid container spacing={4} >
         <Grid item xs={12} md={6}>
           <Box 
             sx={{ 
@@ -63,19 +70,27 @@ export default function Landing() {
               flexDirection: 'column', 
               alignItems: 'center', 
               justifyContent: 'center', 
-              height: '100%'
+              height: '90%',
+              marginLeft: 25,
+              mb: 20
             }}
           >
-            <img src={logo} alt="Logo" style={{ width: '200px', height: '200px' }} />
-            <Typography variant="h5" component="p" sx={{ mb: 4 }}>
-              Manage your tasks efficiently and effortlessly.
+            <img src={logo} alt="Logo" style={{ width: '250px', height: '250px' }} />
+            <Typography variant="h5" component="p" sx={{ mt: 2, color: '#eeeeee' }}>
+              Start your productivity journey with TaskSync. 
             </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
+            <Typography variant="h5" component="p" sx={{ mb: 4, color: '#eeeeee' }}>
+              Login or Sign up now!
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '50%' }}>
               <Button
                 component={RouterLink}
                 to="/login"
                 variant="contained"
-                color="primary"
+                sx={{
+                  backgroundColor: '#4259c1',
+                  color: '#eeeeee' 
+                }}
                 size="large"
                 fullWidth
               >
@@ -86,6 +101,10 @@ export default function Landing() {
                 to="/signup"
                 variant="outlined"
                 color="primary"
+                sx={{
+                  borderColor: '#eeeeee',
+                  color: '#eeeeee' 
+                }}
                 size="large"
                 fullWidth
               >
@@ -95,14 +114,14 @@ export default function Landing() {
           </Box>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Slider {...settings} style={{ width: '100%', borderRadius: '8px' }}>
+          <Slider {...settings} style={{ width: '50%', borderRadius: '8px', marginLeft: 40}}>
             {carouselItems.map((item, index) => (
               <Box key={index} sx={{ padding: 2 }}>
                 <img src={item.image} alt={item.title} style={{ width: '90%', borderRadius: '10px', margin: '10px' }} />
-                <Typography variant="h4" component="h2" sx={{ mt: 2 }}>
+                <Typography variant="h4" component="h2" sx={{ mt: 2, color: '#eeeeee' }}>
                   {item.title}
                 </Typography>
-                <Typography variant="body1" sx={{ mt: 1 }}>
+                <Typography variant="body1" sx={{ mt: 1, color: '#eeeeee'}}>
                   {item.description}
                 </Typography>
               </Box>

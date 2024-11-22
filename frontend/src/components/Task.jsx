@@ -360,7 +360,8 @@ export default function TableAlignment() {
                     backgroundColor: '#dde5f8', // Background color for description box
                   }}>
                     <Typography
-                      sx={{ opacity: 1}} // Set the opacity to 0.5 (50%)
+                      sx={{ opacity: 1,
+                      }}
                     >
                       {row.description}
                     </Typography>

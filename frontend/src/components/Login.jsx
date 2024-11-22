@@ -9,15 +9,17 @@ import {
   InputAdornment,
   InputLabel,
   Link,
-  OutlinedInput,
-  Typography,
+  OutlinedInput
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import axios from 'axios'; // Added axios
 import React, { useState } from 'react'; // Added useState
 import { Link as RouterLink, useNavigate } from 'react-router-dom'; // Added useNavigate
 import { useUser } from '../UserContext'; // Added useUser
-import logo from '../assets/logo.png'; // Adjusted path to your logo image
+import logo1 from '../assets/logo2.png'; // Adjust the path to your logo image
+import logo2 from '../assets/logologin.png'; // Adjust the path to your logo image
+import Typography from '@mui/material/Typography';
+import { AppProvider } from '@toolpad/core/AppProvider';
 
 function CustomEmailField({ onChange }) {
   return (
@@ -90,11 +92,10 @@ function CustomButton() {
     <Button
       type="submit"
       variant="contained" // Changed to contained for a solid button
-      color="primary" // Set button color to gray
       size="large"
       disableElevation
       fullWidth
-      sx={{ my: 2 }}
+      sx={{ my: 2 , color: '#eeeeee', backgroundColor: '#4259c1', fontWeight: 'simi-bold', }}
     >
       Login
     </Button>
@@ -104,7 +105,10 @@ function CustomButton() {
 function SignUpLink() {
   return (
     <RouterLink to="/Signup" style={{ textAlign: 'center', textDecoration: 'none' }}>
-      Not registered yet? Create an account
+      <Typography sx={{}}>
+        <span  style = {{color: '#333'}}>Not registered yet?</span> <span style = {{color: '#4259c1'}} >Create an account</span>
+      </Typography>
+      
     </RouterLink>
   );
 }
@@ -141,13 +145,14 @@ export default function SlotsSignIn({ toggleAuth }) {
   };
 
   return (
+    <AppProvider theme={theme}>
     <Box
       sx={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         height: '100vh', // Full viewport height
-        backgroundColor: theme.palette.background.default,
+        backgroundImage: 'linear-gradient(45deg, #4259c1, #1f295a)',
       }}
     >
       <Box
@@ -156,32 +161,75 @@ export default function SlotsSignIn({ toggleAuth }) {
         sx={{
           display: 'flex',
           flexDirection: 'column',
-          maxWidth: 400,
+          maxWidth: 700,
+          minWidth: 450,
+          height: 670,
           padding: 4,
-          borderRadius: '12px',
-          backgroundColor: 'white',
-          boxShadow: 3, // Add shadow for a modern look
+          borderRadius: '12px 0 0 12px',
+          backgroundColor: '#d6e1f7',
         }}
       >
-        <img src={logo} alt="Logo" style={{ height: '60px', marginBottom: '20px', alignSelf: 'center' }} />
+        <Box sx={{          
+          display: 'flex',
+          flexDirection: 'column',
+          paddingBottom: 5,
+          paddingLeft: 5,
+          paddingRight: 5
+          }}>
+        <img src={logo2} alt="Logo" style={{ height: '120px', marginBottom: '20px', alignSelf: 'center' }} />
 
-        <Typography variant="h4" component="h1" align="center" gutterBottom>
-          Login
-        </Typography>
-        <Typography variant="body1" align="center" sx={{ mb: 2 }}>
-          Hi, Welcome back
-        </Typography>
+        <Box 
+          sx={{
+           
+        }}
+        >
+          <Typography variant="h4" align="left" sx={{ color: '#1f295a', fontWeight: 'bold'}}>
+          Welcome back
+          </Typography>
 
-        <CustomEmailField onChange={handleChange} />
-        <CustomPasswordField onChange={handleChange} />
-
-        <CustomButton />
-
+          <Typography align="left" sx={{ mb: 4 }}>
+          We are happy to see you again.
+          </Typography>
+        </Box>
+        <Box sx={{
+        }}>
+          <CustomEmailField onChange={handleChange} />
+        </Box>
+        <Box sx={{
+          marginBottom: 2
+        }}>
+          <CustomPasswordField onChange={handleChange} />
+          </Box>
+        <Box sx={{
+          marginBottom: 17
+        }}>
+          <CustomButton />
+        </Box>
         {error && <Typography color="error" align="center">{error}</Typography>}
         {success && <Typography color="success" align="center">{success}</Typography>}
 
         <SignUpLink toggleAuth={toggleAuth} />
       </Box>
+      </Box>
+
+      <Box
+        component="form"
+        onSubmit={handleSubmit} // Updated to handleSubmit
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: 700,
+          minWidth: 450,
+          height: 670,
+          padding: 4,
+          borderRadius: '0px 12px 12px 0px',
+          backgroundColor: '#4259c1',
+          justifyContent: 'center'
+        }}
+      >
+      <img src={logo1} alt="Logo" style={{ height: '180px', marginBottom: '40px', alignSelf: 'center', }} />
+      </Box>
     </Box>
+    </AppProvider>
   );
 }

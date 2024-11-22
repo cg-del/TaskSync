@@ -11,18 +11,19 @@ import {
   Snackbar,
   TextField,
   Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Divider,
 } from '@mui/material'; // Keep this for other components
 import Typography from '@mui/joy/Typography'; // Updated import for Typography
+import Modal from '@mui/joy/Modal'; // Use Joy UI Modal
+import ModalDialog from '@mui/joy/ModalDialog'; // Use Joy UI ModalDialog
+import DialogTitle from '@mui/joy/DialogTitle'; // Use Joy UI DialogTitle
+import DialogContent from '@mui/joy/DialogContent'; // Use Joy UI DialogContent
+import DialogActions from '@mui/joy/DialogActions'; // Use Joy UI DialogActions
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../UserContext';
 import timerSound from '../assets/timersound.wav';
-import WarningRoundedIcon from '@mui/icons-material/WarningRounded';
 
 const Timer = () => {
   const { user } = useUser();
@@ -257,16 +258,17 @@ const Timer = () => {
         width: '95%',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'left',
-        justifyContent: 'center',
+        alignItems: 'flex-start', // Align items to the left
+        justifyContent: 'flex-start', // Align content to the top
         gap: 2,
       }}
     >
 
+
       {user ? (
         <>
           <Grid container spacing={4} sx={{ width: '100%', maxWidth: '70%', margin: '0 auto' }}>
-            <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid #ddd', borderRadius: 2, padding: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'}}>
+            <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', border: '1px solid #ddd', borderRadius: 2, padding: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'}}>
               <Box display="flex" alignItems="center" gap={2} mb={2}>
                 <TextField
                   label="Hours"
@@ -349,7 +351,6 @@ const Timer = () => {
                   <Button
                     variant="outlined"
                     sx={{
-                      
                       borderColor: '#00796b',
                       '&:hover': {
                         borderColor: '#004d40',
@@ -367,7 +368,7 @@ const Timer = () => {
                 sx={{
                   display: 'flex',
                   flexDirection: 'column',
-                  alignItems: 'center',
+                  alignItems: 'flex-start', // Align items to the left
                   justifyContent: 'center',
                   height: '100%',
                   borderRadius: 2,
@@ -394,7 +395,6 @@ const Timer = () => {
               </Box>
             </Grid>
           </Grid>
-
 
           <List
             sx={{
@@ -481,26 +481,41 @@ const Timer = () => {
         }
       />
 
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>
-          Confirmation
-        </DialogTitle>
-        <Divider />
-        <DialogContent>
-          <Typography level="body1" sx={{ fontFamily: 'YourDesiredFont, sans-serif', fontSize: '16px' }}>
-              Are you sure you want to discard this timer?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" color="error" onClick={handleDeleteTimer}>
-            Discard Timer
-          </Button>
-          <Button variant="outlined" color="neutral" onClick={() => setOpen(false)}>
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {/* Delete Confirmation Modal */}
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <ModalDialog variant="outlined" role="alertdialog">
+          <DialogTitle>Delete Timer</DialogTitle>
+          <Divider />
+          <DialogContent>
+            Are you sure you want to delete this Timer?
+          </DialogContent>
+          <DialogActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              variant="plain"
+              color="neutral"
+              onClick={() => setOpen(false)}
+              sx={{ textTransform: 'none', paddingLeft: 0, paddingRight: 0 }}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="outlined"
+              color="danger"
+              onClick={handleDeleteTimer}
+              sx={{
+                borderColor: 'red',
+                color: 'red',
+                textTransform: 'none',
+                marginLeft: 20, // Adds space between the buttons
+              }}
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </ModalDialog>
+      </Modal>
 
+      {/* Update Confirmation Modal */}
       <Dialog open={openConfirmUpdate} onClose={handleCloseConfirmUpdate}>
         <DialogTitle>
           Confirm Update

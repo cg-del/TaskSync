@@ -8,7 +8,6 @@ import {
   IconButton,
   InputAdornment,
   InputLabel,
-  Link,
   OutlinedInput,
   Typography,
   Select,
@@ -18,10 +17,11 @@ import { useTheme } from '@mui/material/styles';
 import { AppProvider } from '@toolpad/core/AppProvider';
 import * as React from 'react';
 import axios from 'axios'; // Import axios
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate, Link as RouterLink } from 'react-router-dom'; // Import useNavigate and RouterLink
 import { useUser } from '../UserContext'; // Import useUser
 import { useState } from 'react'; // Ensure useState is imported
-import logo from '../assets/logo.png'; // Adjust the path to your logo image
+import logo1 from '../assets/logo2.png'; // Adjust the path to your logo image
+import logo2 from '../assets/logologin.png'; // Adjust the path to your logo image
 
 export default function CustomSignUp({ toggleAuth }) {
   const theme = useTheme();
@@ -96,6 +96,16 @@ export default function CustomSignUp({ toggleAuth }) {
     }
   };
 
+  function SignUpLink() {
+    return (
+      <RouterLink to="/Login" style={{ textAlign: 'center', textDecoration: 'none' }}>
+        <Typography>
+        <span style = {{color: '#333'}}>Already have an account?</span > <span style = {{color: '#4259c1'}}>Sign in</span>
+        </Typography>
+      </RouterLink>
+    );
+  }
+
   return (
     <AppProvider theme={theme}>
       <Box
@@ -104,7 +114,7 @@ export default function CustomSignUp({ toggleAuth }) {
           justifyContent: 'center',
           alignItems: 'center',
           height: '100vh', // Full viewport height
-          backgroundColor: theme.palette.background.default,
+          backgroundImage: 'linear-gradient(45deg, #1f295a, #4259c1)',
         }}
       >
         <Box
@@ -113,25 +123,29 @@ export default function CustomSignUp({ toggleAuth }) {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            maxWidth: 400,
+            maxWidth: 500,
+            minWidth: 450,
+            height: 670,
             padding: 4, // Increased padding for a modern look
-            borderRadius: '12px', // Match the border radius with login
-            backgroundColor: 'white',
-            boxShadow: 3, // Add shadow for a modern look
+            borderRadius: '12px 0 0 12px',
+            backgroundColor: '#d6e1f7',
           }}
         >
-          <img src={logo} alt="Logo" style={{ height: '60px', marginBottom: '20px', alignSelf: 'center' }} />
+          <Box sx={{          
+          display: 'flex',
+          flexDirection: 'column',
+          paddingBottom: 5,
+          paddingLeft: 5,
+          paddingRight: 5
+          }}>
+          <img src={logo2} alt="Logo" style={{ height: '120px', marginBottom: '20px', alignSelf: 'center' }} />
 
-          <Typography variant="h4" component="h1" align="center" gutterBottom>
-            Sign Up
+          <Typography variant="h4" align="left" sx={{ color: '#1f295a', fontWeight: 'bold'}}>
+            Welcome User
           </Typography>
-
-          <Typography variant="body1" align="center" sx={{ mb: 2 }}>
-            Welcome user!
+          <Typography align="left" sx = {{mb: 2}}>
+          Create your account.
           </Typography>
-
-          {error && <Typography color="error" align="center">{error}</Typography>}
-          {success && <Typography color="success" align="center">{success}</Typography>}
 
           <FormControl sx={{ my: 1 }} fullWidth variant="outlined">
             <InputLabel size="small" htmlFor="outlined-adornment-name">
@@ -262,19 +276,38 @@ export default function CustomSignUp({ toggleAuth }) {
           <Button
             type="submit"
             variant="contained"
-            color="primary"
+            
             size="large"
             disableElevation
             fullWidth
-            sx={{ my: 2 }}
+            sx={{ my: 2 , backgroundColor: '#4259c1'}}
           >
             Sign Up
           </Button>
 
-          <Link href="/Login" onClick={toggleAuth} variant="body2" sx={{ textAlign: 'center' }}>
-            Already have an account? Sign in
-          </Link>
+          {error && <Typography color="error" align="center">{error}</Typography>}
+          {success && <Typography color="success" align="center">{success}</Typography>}
+
+          <SignUpLink /> 
         </Box>
+        </Box>
+        <Box
+        component="form"
+        onSubmit={handleSubmit} // Updated to handleSubmit
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          maxWidth: 700,
+          minWidth: 450,
+          height: 670,
+          padding: 4,
+          borderRadius: '0px 12px 12px 0px',
+          backgroundColor: '#1f295a',
+          justifyContent: 'center'
+        }}
+      >
+      <img src={logo1} alt="Logo" style={{ height: '180px', marginBottom: '40px', alignSelf: 'center', }} />
+      </Box>
       </Box>
     </AppProvider>
   );

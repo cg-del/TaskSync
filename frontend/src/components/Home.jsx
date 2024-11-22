@@ -26,9 +26,6 @@ import Task from './Task';
 import TaskCalendar from './TaskCalendar';
 import Timer from './Timer';
 
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // Import left arrow icon
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward'; // Import right arrow icon
-import IconButton from '@mui/material/IconButton';
 
 const NAVIGATION = [
   {
@@ -37,14 +34,14 @@ const NAVIGATION = [
     icon: <DashboardIcon />,
   },
   {
-    segment: 'sticky-Notes',
-    title: 'Sticky Notes',
-    icon: <StickyNote2Icon />,
-  },
-  {
     segment: 'todo List',
     title: 'To-do List',
     icon: <ListAltIcon />,
+  },
+  {
+    segment: 'calendar',
+    title: 'Calendar',
+    icon: <CalendarTodayIcon />,
   },
   {
     segment: 'timers',
@@ -52,9 +49,9 @@ const NAVIGATION = [
     icon: <AccessTimeIcon />,
   },
   {
-    segment: 'calendar',
-    title: 'Calendar',
-    icon: <CalendarTodayIcon />,
+    segment: 'sticky-Notes',
+    title: 'Sticky Notes',
+    icon: <StickyNote2Icon />,
   },
 
 ];
@@ -159,7 +156,7 @@ function Sidebar({ onNavigate, activeSegment, user }) {
                 borderRadius: '4px', // Added border radius for rounded corners
                 backgroundColor: activeSegment === item.segment ? '#4259c1' : 'transparent', // Light blue for active segment
                 color: activeSegment === item.segment ? '#eeeeee' : '#5163aa', // Dark text for active segment, gray for others
-                '&:hover': { backgroundColor: '#89CFF0', color: '#5163aa' } // Transparent light blue on hover
+                '&:hover': { backgroundColor: '#6577C5', color: '#eeeeee' } // Transparent light blue on hover
               }}
               onClick={() => onNavigate(item.segment)}
             >
@@ -184,7 +181,7 @@ function Sidebar({ onNavigate, activeSegment, user }) {
           padding: 2, 
           borderRadius: '4px', 
           color: '#5163aa',
-          '&:hover': { backgroundColor: '#89CFF0', color: '#5163aa' } // Hover effect
+          '&:hover': { backgroundColor: '#6577C5', color: '#eeeeee' } // Hover effect
         }}
         onClick={() => onNavigate('logout')} // Navigate to logout
       >
