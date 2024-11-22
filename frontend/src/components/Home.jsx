@@ -287,7 +287,7 @@ function DashboardLayoutBranding() {
             marginBottom: '16px', 
             margin: '0 10px', 
             fontWeight: 'bold', 
-            color: '#134B70', // Set the text color
+            color: '#1f295a', // Set the text color
             minWidth: '220px' // Set a minimum width to prevent movement
           }}
         >
@@ -296,7 +296,6 @@ function DashboardLayoutBranding() {
 
         <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, justifyContent: 'center', marginRight: 20 }}>
 
-          
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Typography variant="body1" sx={{ marginRight: 2, marginLeft: 3, color: '#134B70'}}>
               {new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })} {/* Display current date in "November 21, 2024" format */}

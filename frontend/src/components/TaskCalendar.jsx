@@ -227,7 +227,7 @@ export default function TaskCalendar() {
         <Typography variant="h4">Tasks</Typography>
         <Button
           variant="outlined"
-          color="neutral"
+          sx={{ borderColor: '#4259c1', color: '#4259c1'  }}
           startDecorator={<Add />}
           onClick={() => handleDialogOpen()}
         >
@@ -239,7 +239,7 @@ export default function TaskCalendar() {
               variant="h6" 
               sx={{ 
                 marginTop: 2, 
-                color: '#1976d2',  // Blue color
+                color: '#4259c1',  // Blue color
                 fontWeight: 'bold'
               }}
             >
@@ -248,8 +248,19 @@ export default function TaskCalendar() {
             <Table>
               <thead>
                 <tr>
-                  <th>Task Description</th>
-                  <th>Actions</th>
+                <th style={{ backgroundColor: '#4259c1', 
+                          padding: '8px', 
+                          borderRadius: '6px 0px 0px 6px', 
+                          fontWeight: 'bold', 
+                          color: '#eeeeee'
+                        }}>Task Description</th> {/* Set background color for header */}
+
+                <th style={{ backgroundColor: '#4259c1', 
+                            padding: '8px', 
+                            borderRadius: '0px 6px 6px 0px', 
+                            fontWeight: 'bold', 
+                            color: '#eeeeee'
+                            }}>Action</th> {/* Set background color for header */}
                 </tr>
               </thead>
               <tbody>
@@ -261,7 +272,7 @@ export default function TaskCalendar() {
                         variant="outlined"
                         startDecorator={<Edit />}
                         onClick={() => handleDialogOpen(task)}
-                        sx={{ marginRight: 1 }}
+                        sx={{ marginRight: 1, borderColor: '#4259c1', color: '#4259c1'  }}
                       >
                         Edit
                       </Button>

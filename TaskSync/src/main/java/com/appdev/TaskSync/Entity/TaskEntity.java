@@ -27,16 +27,19 @@ public class TaskEntity {
 	@Column(nullable=false)
 	private String description;
 
+	private boolean isComplete;
+
 	public TaskEntity() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public TaskEntity(int taskId, UserEntity user, String description) {
+	public TaskEntity(int taskId, UserEntity user, String description, boolean isComplete) {
 		super();
 		this.taskId = taskId;
 		this.user = user;
 		this.description = description;
+		this.isComplete = isComplete;
 	}
 
 	public int getTaskId() {
@@ -62,5 +65,13 @@ public class TaskEntity {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public boolean getIsComplete() {
+		return isComplete;
+	}
+
+	public void setIsComplete(boolean isComplete) {
+		this.isComplete = isComplete;
 	}
 }

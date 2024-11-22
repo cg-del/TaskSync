@@ -5,7 +5,7 @@ import Button from '@mui/joy/Button';
 import Add from '@mui/icons-material/Add';
 import Edit from '@mui/icons-material/Edit';
 import DeleteForever from '@mui/icons-material/DeleteForever';
-import Typography from '@mui/joy/Typography';
+import Typography from '@mui/material/Typography';
 import axios from 'axios';
 import { useUser } from '../UserContext';
 import Modal from '@mui/joy/Modal';
@@ -20,6 +20,9 @@ import Input from '@mui/joy/Input';
 import Stack from '@mui/joy/Stack';
 import IconButton from '@mui/joy/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import Checkbox from '@mui/joy/Checkbox';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 export default function TableAlignment() {
   const { user } = useUser();
@@ -29,15 +32,18 @@ export default function TableAlignment() {
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [openAddTaskModal, setOpenAddTaskModal] = useState(false);
-  const [addTaskDescription, setAddTaskDescription] = useState(''); // Separate state for Add Task modal
-  const [openEditTaskModal, setOpenEditTaskModal] = useState(false); // State for Edit Task modal
+  const [addTaskDescription, setAddTaskDescription] = useState('');
+  const [openEditTaskModal, setOpenEditTaskModal] = useState(false);
+  const [anchorElComplete, setAnchorElComplete] = useState(null);
+  const [anchorElUncomplete, setAnchorElUncomplete] = useState(null);
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
 
   useEffect(() => {
     if (user) {
       const fetchTasks = async () => {
         try {
           const response = await axios.get(`http://localhost:8080/api/task/getTasksByUser?userId=${user.userId}`);
-          setRows(response.data);
+          setRows(response.data); // Store all tasks
         } catch (error) {
           console.error('Error fetching tasks:', error.response?.data || error.message);
         }
@@ -63,8 +69,8 @@ export default function TableAlignment() {
     try {
       const response = await axios.post('http://localhost:8080/api/task/postTask', taskData);
       setRows((prevRows) => [...prevRows, response.data]);
-      setAddTaskDescription(''); // Reset the add task description
-      setOpenAddTaskModal(false);  // Close modal after adding the task
+      setAddTaskDescription('');
+      setOpenAddTaskModal(false);
     } catch (error) {
       console.error('Error adding task:', error.response?.data || error.message);
     }
@@ -73,7 +79,7 @@ export default function TableAlignment() {
   const handleEdit = (row) => {
     setNewTaskDescription(row.description);
     setEditingTaskId(row.taskId);
-    setOpenEditTaskModal(true); // Open the edit modal
+    setOpenEditTaskModal(true);
   };
 
   const handleUpdateTask = async () => {
@@ -84,14 +90,14 @@ export default function TableAlignment() {
 
     const taskData = {
       description: newTaskDescription,
-      user: { email: user.email }, // Include user information
+      user: { email: user.email },
     };
 
     try {
       const response = await axios.put(`http://localhost:8080/api/task/updateTask/${editingTaskId}`, taskData);
       setRows((prevRows) => prevRows.map((row) => (row.taskId === editingTaskId ? response.data : row)));
-      setNewTaskDescription(''); // Reset the new task description
-      setOpenEditTaskModal(false); // Close the edit modal
+      setNewTaskDescription('');
+      setOpenEditTaskModal(false);
     } catch (error) {
       console.error('Error updating task:', error.response ? error.response.data : error.message);
     }
@@ -118,24 +124,79 @@ export default function TableAlignment() {
     setOpenConfirmation(false);
   };
 
-  // Update the openAddTaskModal function to reset the description
   const openAddTaskModalHandler = () => {
-    setAddTaskDescription(''); // Reset the description when opening the modal
+    setAddTaskDescription('');
     setOpenAddTaskModal(true);
+  };
+
+  // Function to handle checkbox change for completing tasks
+  const handleCheckboxChange = (event, taskId, isComplete) => {
+    setSelectedTaskId(taskId);
+    if (isComplete) {
+      setAnchorElUncomplete(event.currentTarget); // Open uncomplete menu
+    } else {
+      setAnchorElComplete(event.currentTarget); // Open complete menu
+    }
+  };
+
+  const handleCompleteTask = async () => {
+    if (!selectedTaskId) return;
+
+    try {
+      const taskToUpdate = rows.find(row => row.taskId === selectedTaskId);
+      const response = await axios.put(`http://localhost:8080/api/task/updateTask/${selectedTaskId}`, {
+        description: taskToUpdate.description,
+        isComplete: true, // Mark as complete
+        user: { email: user.email },
+      });
+
+      // Update the state with the new task data
+      setRows((prevRows) => prevRows.map((row) => (row.taskId === selectedTaskId ? response.data : row)));
+      setAnchorElComplete(null); // Close the complete menu
+    } catch (error) {
+      console.error('Error updating task status:', error.response?.data || error.message);
+    }
+  };
+
+  const handleUncompleteTask = async () => {
+    if (!selectedTaskId) return;
+
+    try {
+      const taskToUpdate = rows.find(row => row.taskId === selectedTaskId);
+      const response = await axios.put(`http://localhost:8080/api/task/updateTask/${selectedTaskId}`, {
+        description: taskToUpdate.description,
+        isComplete: false, // Mark as uncomplete
+        user: { email: user.email },
+      });
+
+      // Update the state with the new task data
+      setRows((prevRows) => prevRows.map((row) => (row.taskId === selectedTaskId ? response.data : row)));
+      setAnchorElUncomplete(null); // Close the uncomplete menu
+    } catch (error) {
+      console.error('Error updating task status:', error.response?.data || error.message);
+    }
+  };
+
+  const handleMenuClose = () => {
+    setAnchorElComplete(null);
+    setAnchorElUncomplete(null);
   };
 
   return (
     <Box sx={{ width: '95%', padding: 2 }}>
-
       {/* Button to trigger the Add Task Modal */}
       <Button
         variant="outlined"
         sx={{ borderColor: '#4259c1', color: '#4259c1' }}
         startDecorator={<Add />}
-        onClick={openAddTaskModalHandler} // Use the new handler
+        onClick={openAddTaskModalHandler}
       >
         Add Task
       </Button>
+
+      <Typography variant="h5" sx={{ marginTop: 2, color: '#1f295a', fontWeight: 'bold'}}>
+        To-Do
+      </Typography>
 
       {/* Confirmation Modal */}
       <Modal open={openConfirmation} onClose={handleCancelDelete}>
@@ -162,7 +223,7 @@ export default function TableAlignment() {
                 borderColor: 'red',
                 color: 'red',
                 textTransform: 'none',
-                marginLeft: 20, // Adds space between the buttons
+                marginLeft: 20,
               }}
             >
               Delete
@@ -173,8 +234,7 @@ export default function TableAlignment() {
 
       {/* Add Task Modal */}
       <Modal open={openAddTaskModal} onClose={() => setOpenAddTaskModal(false)}>
-        <ModalDialog sx={{ maxWidth: '450px', width: '100%' }} >
-          {/* Close Button */}
+        <ModalDialog sx={{ maxWidth: '450px', width: '100%' }}>
           <IconButton
             aria-label="close"
             onClick={() => setOpenAddTaskModal(false)}
@@ -201,8 +261,8 @@ export default function TableAlignment() {
                 <Input
                   autoFocus
                   required
-                  value={addTaskDescription} // Use addTaskDescription instead
-                  onChange={(e) => setAddTaskDescription(e.target.value)} // Use addTaskDescription instead
+                  value={addTaskDescription}
+                  onChange={(e) => setAddTaskDescription(e.target.value)}
                 />
               </FormControl>
               <Button type="submit">Add Task</Button>
@@ -213,8 +273,7 @@ export default function TableAlignment() {
 
       {/* Edit Task Modal */}
       <Modal open={openEditTaskModal} onClose={() => setOpenEditTaskModal(false)}>
-        <ModalDialog sx={{ maxWidth: '450px', width: '100%' }} >
-          {/* Close Button */}
+        <ModalDialog sx={{ maxWidth: '450px', width: '100%' }}>
           <IconButton
             aria-label="close"
             onClick={() => setOpenEditTaskModal(false)}
@@ -241,8 +300,8 @@ export default function TableAlignment() {
                 <Input
                   autoFocus
                   required
-                  value={newTaskDescription} // Use newTaskDescription for editing
-                  onChange={(e) => setNewTaskDescription(e.target.value)} // Use newTaskDescription for editing
+                  value={newTaskDescription}
+                  onChange={(e) => setNewTaskDescription(e.target.value)}
                 />
               </FormControl>
               <Button type="submit">Update Task</Button>
@@ -260,31 +319,51 @@ export default function TableAlignment() {
         <Table sx={{ '& tr > *:not(:first-of-type)': { textAlign: 'left' } }}>
           <thead>
           <tr>
-            <th style={{ backgroundColor: '#4259c1', 
+            <th style={{ width: '100px',
+                          backgroundColor: '#4259c1', 
                           padding: '8px', 
                           borderRadius: '6px 0px 0px 6px', 
                           fontWeight: 'bold', 
                           color: '#eeeeee'
-                        }}>To-do</th> {/* Set background color for header */}
+                        }}>Status</th> {/* Status column */}
+
+            <th style={{ backgroundColor: '#4259c1', 
+                         width: '500px',
+                         padding: '8px', 
+                         borderRadius: '0px 0px 0px 0px', 
+                         fontWeight: 'bold', 
+                         color: '#eeeeee'
+                        }}>Task Description</th> {/* Task Description column */}
 
             <th style={{ backgroundColor: '#4259c1', 
                          padding: '8px', 
                          borderRadius: '0px 6px 6px 0px', 
                          fontWeight: 'bold', 
                          color: '#eeeeee'
-                        }}>Action</th> {/* Set background color for header */}
+                        }}>Action</th> {/* Action column */}
           </tr>
           </thead>
           <tbody>
-            {rows.map((row) => (
+            {rows.filter(row => !row.isComplete).map((row) => ( // Only show uncompleted tasks
               <tr key={row.taskId}>
+                <td>
+                  <Checkbox 
+                    sx={{ marginLeft: 2, borderColor: '#4259c1', color: '#4259c1' }}
+                    checked={row.isComplete} // Ensure this matches your boolean field
+                    onChange={(e) => handleCheckboxChange(e, row.taskId, row.isComplete)} // Call the function to open menu
+                  />
+                </td>
                 <td>
                   <Box sx={{ 
                     padding: 2, 
                     borderRadius: '4px', 
                     backgroundColor: '#dde5f8', // Background color for description box
                   }}>
-                    {row.description}
+                    <Typography
+                      sx={{ opacity: 1}} // Set the opacity to 0.5 (50%)
+                    >
+                      {row.description}
+                    </Typography>
                   </Box>
                 </td>
                 <td>
@@ -318,7 +397,130 @@ export default function TableAlignment() {
                   </Box>
                 </td>
               </tr>
-            ))}
+            ))} 
+          </tbody>
+        </Table>
+      </Box>
+
+      {/* Menu for completing tasks */}
+      <Menu
+        anchorEl={anchorElComplete}
+        open={Boolean(anchorElComplete)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem 
+          sx={{ 
+            borderRadius: '4px',
+            backgroundColor: '#dde5f8',
+          }}
+          onClick={handleCompleteTask}
+        >
+          Mark as Complete
+        </MenuItem>
+      </Menu>
+
+      {/* Menu for uncompleting tasks */}
+      <Menu
+        anchorEl={anchorElUncomplete}
+        open={Boolean(anchorElUncomplete)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem 
+          sx={{ 
+            borderRadius: '4px',
+            backgroundColor: '#dde5f8',
+          }}
+          onClick={handleUncompleteTask}
+        >
+          Mark as Uncomplete
+        </MenuItem>
+      </Menu>
+
+      {/* Complete Table */}
+      <Typography variant="h5" sx={{ marginTop: 4, color: '#1f295a', fontWeight: 'bold'}}>
+        Complete
+      </Typography>
+      <Box sx={{ 
+                marginTop: 2,
+                borderRadius: '4px',
+                backgroundColor: '#dde5f8',
+              }}>
+        <Table sx={{ '& tr > *:not(:first-of-type)': { textAlign: 'left' } }}>
+          <thead>
+          <tr>
+            <th style={{ width: '100px',
+                          backgroundColor: '#4259c1', 
+                          padding: '8px', 
+                          borderRadius: '6px 0px 0px 6px', 
+                          fontWeight: 'bold', 
+                          color: '#eeeeee'
+                        }}>Status</th> {/* Status column */}
+
+            <th style={{ backgroundColor: '#4259c1', 
+                         width: '500px',
+                         padding: '8px', 
+                         borderRadius: '0px 0px 0px 0px', 
+                         fontWeight: 'bold', 
+                         color: '#eeeeee'
+                        }}>Task Description</th> {/* Task Description column */}
+
+            <th style={{ backgroundColor: '#4259c1', 
+                         padding: '8px', 
+                         borderRadius: '0px 6px 6px 0px', 
+                         fontWeight: 'bold', 
+                         color: '#eeeeee'
+                        }}>Action</th> {/* Action column */}
+          </tr>
+          </thead>
+          <tbody>
+            {rows.filter(row => row.isComplete).map((row) => ( // Only show completed tasks
+              <tr key={row.taskId}>
+                <td>
+                  <Checkbox 
+                    sx={{ marginLeft: 2, borderColor: '#4259c1', color: '#4259c1' }}
+                    checked={row.isComplete} // Ensure this matches your boolean field
+                    onChange={(e) => handleCheckboxChange(e, row.taskId, row.isComplete)} // Call the function to open menu
+                  />
+                </td>
+                <td>
+                  <Box sx={{ 
+                    padding: 2, 
+                    borderRadius: '4px', 
+                    backgroundColor: '#dde5f8', // Background color for description box
+                  }}>
+                    <Typography
+                      sx={{ 
+                        opacity: 0.8,
+                        textDecoration: 'line-through',
+                      }}>
+                      {row.description}
+                    </Typography>
+                  </Box>
+                </td>
+                <td>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    padding: 1, 
+                    gap: 1,
+                    borderRadius: '4px', 
+                    backgroundColor: '#dde5f8'
+                    }}> {/* Box for action buttons */}
+                    <Button
+                      variant="outlined"
+                      startDecorator={<DeleteForever />}
+                      onClick={() => openDeleteConfirmation(row.taskId)}
+                      sx={{
+                        borderColor: 'red',
+                        color: 'red',
+                        textTransform: 'none',
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </Box>
+                </td>
+              </tr>
+            ))} 
           </tbody>
         </Table>
       </Box>

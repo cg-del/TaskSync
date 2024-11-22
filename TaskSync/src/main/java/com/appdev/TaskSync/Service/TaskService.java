@@ -55,6 +55,7 @@ public class TaskService {
             
             task.setUser(newTaskDetails.getUser());
             task.setDescription(newTaskDetails.getDescription());
+            task.setIsComplete(newTaskDetails.getIsComplete());
         } catch (NoSuchElementException nex) {
             throw new NameNotFoundException("Task " + taskId + " not found!");
         }finally {
