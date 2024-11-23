@@ -1,4 +1,4 @@
-import { Delete, Edit, Pause, PlayArrow, Add } from '@mui/icons-material';
+import { Delete, Edit, Pause, PlayArrow } from '@mui/icons-material';
 import {
   Box,
   Grid,
@@ -19,6 +19,8 @@ import DialogTitle from '@mui/joy/DialogTitle'; // Use Joy UI DialogTitle
 import DialogContent from '@mui/joy/DialogContent'; // Use Joy UI DialogContent
 import DialogActions from '@mui/joy/DialogActions'; // Use Joy UI DialogActions
 import StopCircleIcon from '@mui/icons-material/StopCircle'; 
+
+import Add from '@mui/icons-material/Add';
 
 import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
@@ -250,7 +252,7 @@ const Timer = () => {
   return (
     <Box
       sx={{
-        width: '100%',
+        width: '98%',
         display: 'flex',
         flexDirection: 'column',
         overflowX: 'hidden',
@@ -265,7 +267,7 @@ const Timer = () => {
         sx={{
           
           width: '100%',
-          height: '400px',
+          height: '390px',
           userSelect: 'none', 
           backgroundColor: 'white',
           borderRadius: '15px',
@@ -274,7 +276,7 @@ const Timer = () => {
           alignItems: 'center',
           flexDirection: 'column',
           color: 'white',
-          marginBottom: '20px',
+          marginBottom: '15px',
         }}
       >
         <Typography 
@@ -440,7 +442,7 @@ const Timer = () => {
                 <Box gap={2} display={'flex'} alignItems={'center'} justifyContent={'center'} marginLeft={5} marginRight={4}>
                   <Button
                     variant="outlined"
-
+                    startDecorator={<Add />}
                     sx={{
                       borderColor: '#4259c1', color: '#4259c1',
                     }}
@@ -467,7 +469,7 @@ const Timer = () => {
 
             <List
               sx={{
-                marginTop: 4,
+                marginTop: 2,
                 minHeight: '230px',
                 padding: '5px',
                 borderRadius: '15px',

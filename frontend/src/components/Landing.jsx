@@ -4,10 +4,6 @@ import { Link as RouterLink } from 'react-router-dom';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css"; 
 import "slick-carousel/slick/slick-theme.css";
-import todolistGif from '../assets/todolist.gif';
-import stickynoteGif from '../assets/stickynote.gif';
-import timerGif from '../assets/timer.gif';
-import calendarGif from '../assets/calendar.gif';
 import logo from '../assets/logo2.png';
 import Typography from '@mui/material/Typography';
 
@@ -18,14 +14,14 @@ import task from '../assets/LandingTask.png';
 
 const carouselItems = [
   {
-    title: "Sticky Notes",
-    description: "Quickly jot down your thoughts and ideas with our sticky notes feature.",
-    image: notes, 
-  },
-  {
     title: "To-do List",
     description: "Organize your tasks and check them off as you complete them",
     image: task, 
+  },
+  {
+    title: "Calendar",
+    description: "Plan your schedule and never miss a deadline with our task calendar.",
+    image: calendar, 
   },
   {
     title: "Timer",
@@ -33,9 +29,9 @@ const carouselItems = [
     image: timer, 
   },
   {
-    title: "Calendar",
-    description: "Plan your schedule and never miss a deadline with our task calendar.",
-    image: calendar, 
+    title: "Sticky Notes",
+    description: "Quickly jot down your thoughts and ideas with our sticky notes feature.",
+    image: notes, 
   },
 
 ];
@@ -58,7 +54,7 @@ export default function Landing() {
         justifyContent: 'center',
         height: '98vh', // Full viewport height
         alignItems: 'center',
-        backgroundImage: 'linear-gradient(45deg, #1f295a, #4259c1)',
+        backgroundImage: 'linear-gradient(45deg, #4259c1, #1f295a)',
       }}
     >
       <Grid container spacing={4} >
