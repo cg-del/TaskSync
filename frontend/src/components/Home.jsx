@@ -95,9 +95,8 @@ function DemoPageContent({ activeSegment, user }) {
         textAlign: 'left',
         flexGrow: 1,
         overflowY: 'hidden',
-        minHeight: '0',
+        minHeight: '100%',
         width: '95%',
-        padding: 2,
       }}
     >
       {content}
@@ -116,12 +115,12 @@ function Sidebar({ onNavigate, activeSegment, user }) {
     <Box sx={{ 
       maxWidth: '320px',  // Increased width
       minWidth: '320px', 
+      height: '97vh',
       borderRight: '1px solid #ccc', 
       padding: 2, 
       marginRight: '20px',
       borderRadius: '0px 25px 25px 0px',
       backgroundColor: '#1f295a', // Set to a white background for the sidebar
-      height: '95vh',
       display: 'flex',
       flexDirection: 'column',
       justifyContent: 'space-between' // Space between items and bottom
@@ -273,7 +272,7 @@ function DashboardLayoutBranding() {
   };
 
   return (
-    <Box sx={{ display: 'flex', height: '98.5vh', backgroundColor: '#d6e1f7', overflow: 'hidden' }}>
+    <Box sx={{ display: 'flex', height: '100vh', backgroundColor: '#d6e1f7', overflow: 'hidden' }}>
       <Sidebar onNavigate={handleNavigation} activeSegment={activeSegment} />
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <Box sx={{ display: 'flex', alignItems: 'center', padding: 3, justifyContent: 'space-between', marginTop: 1 }}>
