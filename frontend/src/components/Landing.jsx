@@ -52,7 +52,7 @@ export default function Landing() {
       sx={{
         display: 'flex',
         justifyContent: 'center',
-        height: '98vh', // Full viewport height
+        height: '100vh', // Full viewport height
         alignItems: 'center',
         backgroundImage: 'linear-gradient(45deg, #4259c1, #1f295a)',
       }}

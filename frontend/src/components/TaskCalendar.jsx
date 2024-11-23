@@ -212,22 +212,42 @@ export default function TaskCalendar() {
 
   return (
     <Box sx={{ display: 'flex', gap: 4}}>
-      <div style={{ flexShrink: 0, maxHeight: '500px', overflowY: 'auto' }}>
-        <Calendar
-          onChange={setSelectedDate}
-          value={selectedDate}
-          onClickDay={(date) => setSelectedDate(date)}
-          locale="en-US"
-          tileClassName={tileClassName}
-          firstDayOfWeek={0}
-        />
+      <div style={{ flexShrink: 0, maxHeight: '500px', overflowY: 'auto', display: 'flex', justifyContent: 'flex-start' }}>
+      <Calendar
+        onChange={setSelectedDate}
+        value={selectedDate}
+        onClickDay={(date) => {
+          // Prevent past dates from being selected
+          if (date >= new Date().setHours(0, 0, 0, 0)) {
+            setSelectedDate(date);
+          }
+        }}
+        locale="en-US"
+        tileDisabled={({ date }) => date < new Date().setHours(0, 0, 0, 0)} // Disable past dates
+        tileClassName={({ date }) => {
+          const calendarDate = formatDateString(date);
+          const isPastDate = date < new Date().setHours(0, 0, 0, 0);
+
+          // Add a custom class for past dates
+          const taskClasses = rows
+            .filter(row => row.date === calendarDate)
+            .map((task, index) => `task-highlight-${index % taskColors.length}`)
+            .join(' ');
+
+          const pastDateClass = isPastDate ? 'past-date' : '';
+          const hasTasksClass = taskClasses ? 'has-tasks' : 'no-tasks';
+
+          return `${pastDateClass} ${hasTasksClass}`;
+        }}
+        firstDayOfWeek={0}
+      />
       </div>
 
-      <Box sx={{ flex: 1 }}>
+      <Box sx={{ flex: 1, width: '40vw' }}>
         <Typography variant="h4">Tasks</Typography>
         <Button
           variant="outlined"
-          sx={{ borderColor: '#4259c1', color: '#4259c1'  }}
+          sx={{ borderColor: '#4259c1', color: '#4259c1', width: '130px' }}
           startDecorator={<Add />}
           onClick={() => handleDialogOpen()}
         >
@@ -248,19 +268,19 @@ export default function TaskCalendar() {
             <Table>
               <thead>
                 <tr>
-                <th style={{ backgroundColor: '#4259c1', 
-                          padding: '8px', 
-                          borderRadius: '6px 0px 0px 6px', 
-                          fontWeight: 'bold', 
-                          color: '#eeeeee'
-                        }}>Task Description</th> {/* Set background color for header */}
-
-                <th style={{ backgroundColor: '#4259c1', 
+                  <th style={{ backgroundColor: '#4259c1', 
                             padding: '8px', 
-                            borderRadius: '0px 6px 6px 0px', 
+                            borderRadius: '6px 0px 0px 6px', 
                             fontWeight: 'bold', 
                             color: '#eeeeee'
-                            }}>Action</th> {/* Set background color for header */}
+                          }}>Task Description</th> {/* Set background color for header */}
+
+                  <th style={{ backgroundColor: '#4259c1', 
+                              padding: '8px', 
+                              borderRadius: '0px 6px 6px 0px', 
+                              fontWeight: 'bold', 
+                              color: '#eeeeee'
+                              }}>Action</th> {/* Set background color for header */}
                 </tr>
               </thead>
               <tbody>
@@ -317,6 +337,12 @@ export default function TaskCalendar() {
               variant="outlined"
               value={formatDateString(selectedDate)}
               onChange={(e) => setSelectedDate(new Date(e.target.value))}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              inputProps={{
+                min: formatDateString(new Date()), // Set the minimum date to today
+              }}
             />
           </DialogContent>
           <DialogActions>
