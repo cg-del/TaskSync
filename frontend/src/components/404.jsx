@@ -1,5 +1,6 @@
 import React from 'react';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography'; 
 import NotFoundImage from '../assets/404.svg'; // Ensure 404.svg is in the correct directory
 
 const NotFound = () => {
@@ -11,7 +12,7 @@ const NotFound = () => {
         justifyContent: 'center',
         height: '100vh',
         textAlign: 'left',
-        backgroundColor: '#f9f9f9',
+        backgroundColor: '#d6e1f7',
       }}
     >
       {/* SVG Image */}
@@ -22,30 +23,49 @@ const NotFound = () => {
         sx={{
           maxWidth: '250px',
           marginRight: '200px',
+          marginBottom: 4,
         }}
       />
 
       {/* Text Content */}
       <Box>
-        <Box
-          component="h1"
+        <Typography
+          variant="h1"
           sx={{
-            fontSize: '3rem',
-            color: '#333',
-            margin: 0,
+            fontWeight: 'bold',
+            fontSize: '8rem',
+            color: '#1f295a',
+            fontFamily: 'Arial'
           }}
         >
           404
-        </Box>
-        <Box
-          component="p"
+        </Typography>
+
+        <Typography
+          variant="body1"
+          sx={{
+            fontWeight: 'bold',
+            fontSize: '2rem',
+            color: '#1f295a',
+            marginBottom: 1,
+            fontFamily: 'Arial'
+          }}
+        >
+          Looks like you are lost.
+        </Typography>
+
+        <Typography
+          variant="body1"
           sx={{
             fontSize: '1.2rem',
             color: '#555',
+            marginBottom: 4,
+            marginRight: 4,
+            fontFamily: 'Arial'
           }}
         >
-          Page Not Found
-        </Box>
+          The page you are looking for is not available.
+        </Typography>
       </Box>
     </Box>
   );

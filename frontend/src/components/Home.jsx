@@ -197,7 +197,9 @@ function Sidebar({ onNavigate, activeSegment, user }) {
 
 function DashboardLayoutBranding() {
   const navigate = useNavigate();
-  const [activeSegment, setActiveSegment] = useState('board');
+  const [activeSegment, setActiveSegment] = useState(() => {
+    return localStorage.getItem('activeSegment') || 'board';
+  });
   const { user, setUser } = useUser();
   const [isModalOpen, setModalOpen] = useState(false); // State for modal visibility
 
@@ -218,6 +220,7 @@ function DashboardLayoutBranding() {
       setModalOpen(true); // Open the confirmation modal
     } else {
       setActiveSegment(segment);
+      localStorage.setItem('activeSegment', segment);
     }
   };
 
