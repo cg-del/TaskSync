@@ -8,6 +8,7 @@ import Signup from './components/Signup';
 import Notes from './components/StickyNotes';
 import Task from './components/Task';
 import Calendar from './components/TaskCalendar';
+import NotFound from './components/404';
 
 
 import Timer from './components/Timer';
@@ -26,6 +27,8 @@ function App() {
           <Route path="/Calendar" element={<Calendar />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Signup" element={<Signup />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/404" element={<NotFound />} />
         </Routes>
       </Router>
     </UserProvider>

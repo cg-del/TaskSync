@@ -15,6 +15,7 @@ import FormControl from '@mui/joy/FormControl';
 import Typography from '@mui/joy/Typography';
 import Divider from '@mui/material/Divider';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'; // Import MoreHoriz icon
+import { Navigate } from 'react-router-dom';
  
 export default function StickyNotes() {
   const { user } = useUser();
@@ -24,6 +25,10 @@ export default function StickyNotes() {
   const [openAddTaskModal, setOpenAddTaskModal] = useState(false);
   const [openDeleteConfirmation, setOpenDeleteConfirmation] = useState(false);
   const [noteToDelete, setNoteToDelete] = useState(null);
+
+  if (!user) {
+    return <Navigate to="/404" replace />;
+  }
  
   // Fetch sticky notes only for the logged-in user
   useEffect(() => {

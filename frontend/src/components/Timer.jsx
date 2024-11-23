@@ -29,6 +29,8 @@ import { useUser } from '../UserContext';
 import timerSound from '../assets/timersound.wav';
 import Button from '@mui/joy/Button';
 
+import { Navigate } from 'react-router-dom';
+
 const Timer = () => {
   const { user } = useUser();
   const navigate = useNavigate();
@@ -49,6 +51,9 @@ const Timer = () => {
   const [isPlaying, setIsPlaying] = useState(false); // State to track if the timer is playing
 
 
+  if (!user) {
+    return <Navigate to="/404" replace />;
+  }
 
   useEffect(() => {
     if (!user) {

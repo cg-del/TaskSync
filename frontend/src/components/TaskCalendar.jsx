@@ -19,6 +19,7 @@ import "../css/Calendar.css";
 import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import Divider from '@mui/joy/Divider';
+import { Navigate } from 'react-router-dom';
 
 export default function TaskCalendar() {
   const { user } = useUser();
@@ -29,6 +30,10 @@ export default function TaskCalendar() {
   const [editingTask, setEditingTask] = useState(null);
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
+
+  if (!user) {
+    return <Navigate to="/404" replace />;
+  }
 
   const taskColors = [
     '#ffd54f', '#ff8a80', '#80deea', '#b388ff', '#c5e1a5', '#ffcc80', '#e1bee7'

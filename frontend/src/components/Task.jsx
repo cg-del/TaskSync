@@ -23,6 +23,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import Checkbox from '@mui/joy/Checkbox';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { Navigate } from 'react-router-dom';
 
 export default function TableAlignment() {
   const { user } = useUser();
@@ -37,6 +38,11 @@ export default function TableAlignment() {
   const [anchorElComplete, setAnchorElComplete] = useState(null);
   const [anchorElUncomplete, setAnchorElUncomplete] = useState(null);
   const [selectedTaskId, setSelectedTaskId] = useState(null);
+
+  
+  if (!user) {
+    return <Navigate to="/404" replace />;
+  }
 
   useEffect(() => {
     if (user) {
