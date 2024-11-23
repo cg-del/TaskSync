@@ -199,26 +199,37 @@ export default function StickyNotes() {
             </form>
           </DialogContent>
           <DialogActions>
-          <Button onClick={handleNoteOperation} variant="contained" color='primary'>
-            {editingNoteId ? 'Update Note' : 'Add Task'}
+          <Button 
+            onClick={handleNoteOperation} 
+            variant="contained" 
+            sx={{ 
+              backgroundColor: '#0B6BCB', 
+              color: 'white', 
+              '&:hover': { 
+                backgroundColor: '#0A5DAA' // Darker shade for hover effect
+              } 
+            }}  // Set custom background color
+          >
+            {editingNoteId ? 'Update Note' : 'Add Note'}
           </Button>
           </DialogActions>
         </ModalDialog>
       </Modal>
  
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 0.3fr)', gap: 3, marginTop: 2 }}>
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 0.3fr)', gap: 3, marginTop: 4 }}>
         {notes.map((note) => (
           <Box key={note.noteId} sx={{
-            backgroundColor: '#89CFF0', //yellow //extra color #ffda33 ##ffeb3b
+            backgroundColor: '#7ec9ed', //yellow //extra color #ffda33 ##ffeb3b ##89CFF0
             padding: '40px 10px 10px',
-            borderRadius: '0px 0  px 25px 0px',
+            borderRadius: '0px 0 25px 0px',
             width: '250px',
-            height: '230px', // size sa stickynote
+            height: '230px',
             boxShadow: '0 4px 4px rgba(0, 0, 0, 0.4)',
             position: 'relative',
             overflow: 'hidden',
+            marginBottom: '30px',
           }}>
-            <Divider sx={{ marginBottom: 1 }} /> {/* Divider added here */}
+            <Divider sx={{ marginBottom: 1 }} />
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', whiteSpace: 'pre-wrap', overflowWrap: 'break-word', }}>
               <Typography variant="body1" sx={{
                 wordWrap: 'break-word',
