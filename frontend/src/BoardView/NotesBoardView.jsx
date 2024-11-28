@@ -88,10 +88,12 @@ export default function StickyNoteBoardView() {
             key={note.noteId}
             sx={{
               backgroundColor: '#87ceeb',
-              padding: '40px 15px 15px',
+              padding: '25px 15px 15px',
               borderRadius: '8px',
               position: 'relative',
-              minHeight: '100px',
+              minHeight: '110px',
+              width: '250px',
+              position: 'relative',
               boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
               transition: 'transform 0.2s, box-shadow 0.2s',
               '&:hover': {
@@ -103,7 +105,9 @@ export default function StickyNoteBoardView() {
             <div style={{ 
               display: 'flex', 
               justifyContent: 'space-between', 
-              alignItems: 'flex-start'
+              alignItems: 'flex-start',
+              whiteSpace: 'pre-wrap', // Added to preserve whitespace
+              overflowWrap: 'break-word', // Added to handle word breaking
             }}>
               <Typography
                 sx={{
@@ -112,8 +116,13 @@ export default function StickyNoteBoardView() {
                   fontSize: '16px',
                   color: '#1f295a',
                   fontWeight: 500,
+                  maxHeight: '150px', // Set a maximum height for the text box
+                  overflow: 'hidden', // Hide overflow text
+                  display: '-webkit-box', // Use flexbox for the text container
                   lineHeight: 1.5,
-                  paddingRight: '40px',
+                  WebkitLineClamp: 5, // Limit the number of lines displayed (adjust as needed)
+                  WebkitBoxOrient: 'vertical', // Set the box orientation to vertical
+                  paddingRight: '10px',
                 }}
               >
                 {note.content}
@@ -124,6 +133,7 @@ export default function StickyNoteBoardView() {
                   sx={{ 
                     color: '#1f295a',
                     padding: '4px',
+                    top: -4,
                   }}
                 >
                   <MoreHorizIcon fontSize="small" />
@@ -133,6 +143,7 @@ export default function StickyNoteBoardView() {
                   sx={{ 
                     color: '#1f295a',
                     padding: '4px',
+                    top: -4,
                   }}
                 >
                   <CloseIcon fontSize="small" />
