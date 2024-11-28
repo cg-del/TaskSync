@@ -4,6 +4,11 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { useUser } from '../UserContext'; // Import the useUser hook
 
+import TBoard from '../BoardView/TaskBoardView';
+import CalendarBoardView from '../BoardView/CalBoardView';
+import TimerBoardView from '../BoardView/TimerBoardView';
+import NoteBoardView from '../BoardView/NotesBoardView';
+
 const HorizontalScrollBox = () => {
   const scrollRef1 = useRef(null);
   const { user } = useUser(); // Use the useUser hook to get the current user
@@ -35,12 +40,12 @@ const HorizontalScrollBox = () => {
             },
           }}
         >
-          {[...Array(8)].map((_, index) => (
+          {[...Array(3)].map((_, index) => (
             <Box
               key={index}
               sx={{
-                minWidth: '500px',
-                height: '200px',
+                minWidth: '450px',
+                height: '150px',
                 backgroundColor: 'white',
                 borderRadius: '15px',
                 margin: '0 5px',
@@ -59,105 +64,112 @@ const HorizontalScrollBox = () => {
       </Box>
 
       {/* Second Grid */}
-      <Grid container spacing={0.5} sx={{ width: '100%', boxSizing: 'border-box', maxWidth: '100%', margin: '0 auto', marginTop: 4, height: '60vh' }}>
-        <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', borderRadius: '15px', padding: 2 }}>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'flex-start',
-              borderRadius: '15px',
-              height: '100%',
-              backgroundColor: 'white',
-              padding: 2,
-            }}
-          >
-            <Typography variant="h6">
+      <Grid container spacing={0.5} sx={{ width: '100%', boxSizing: 'border-box', maxWidth: '100%', margin: '0 auto', marginTop: 4, height: '500px',  }}>
+        <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', borderRadius: '15px', padding: 2, height: '100%',}}>
+            <Typography variant="h6" sx={{fontWeight: 'bold', color: '#1f295a'}}>
                 To-Do List
             </Typography>
-
-                {/*Contents needed*/}
-
-
-
-
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', borderRadius: '15px', padding: 2 }}>
           <Box
             sx={{
               display: 'flex',
               alignItems: 'flex-start',
               borderRadius: '15px',
-              height: '100%',
+              height: 'calc(100% - 40px)', 
               backgroundColor: 'white',
               padding: 2,
+              overflow: 'hidden', // Added overflow hidden
             }}
           >
-        <Typography variant="h6">   
-            Calendar
+                {/*Contents needed*/}
+                <Box sx={{ 
+                  flexGrow: 1, 
+                  overflow: 'auto',  // Changed to auto
+                  height: '100%',    // Added height 100%
+                  width: '100%'      // Added width 100%
+                }}>
+              <TBoard />
+            </Box>
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', borderRadius: '15px', padding: 2 , height: '100%',}}>
+        <Typography variant="h6" sx={{fontWeight: 'bold', color: '#1f295a'}}>   
+            Schedule
         </Typography>
-
-
-                {/*Contents needed*/}
-
-
-
-
-
-
-
-        
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', borderRadius: '15px', padding: 2 }}>
           <Box
             sx={{
               display: 'flex',
               alignItems: 'flex-start',
               borderRadius: '15px',
-              height: '100%',
+              height: 'calc(100% - 40px)', 
               backgroundColor: 'white',
               padding: 2,
+              overflow: 'hidden', // Added overflow hidden
             }}
           >
-            <Typography variant="h6">   
+                {/*Contents needed*/}
+                <Box sx={{ 
+                  flexGrow: 1, 
+                  overflow: 'auto',  // Changed to auto
+                  height: '100%',    // Added height 100%
+                  width: '100%'      // Added width 100%
+                }}>
+                  <CalendarBoardView />
+                </Box>
+
+          </Box>
+        </Grid>
+
+        <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', borderRadius: '15px', padding: 2 , height: '100%',}}>
+          <Typography variant="h6" sx={{fontWeight: 'bold', color: '#1f295a'}}>   
                 Timer
-            </Typography>
-
-
-
-                {/*Contents needed*/}
-
-
-
-
-
-
-
-
-
-          </Box>
-        </Grid>
-        <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', borderRadius: '15px', padding: 2 }}>
+          </Typography>
           <Box
             sx={{
               display: 'flex',
               alignItems: 'flex-start',
               borderRadius: '15px',
-              height: '100%',
+              height: 'calc(100% - 40px)', 
               backgroundColor: 'white',
               padding: 2,
+              overflow: 'hidden', // Added overflow hidden
             }}
           >
-            <Typography variant="h6">   
+                {/*Contents needed*/}
+                <Box sx={{ 
+                  flexGrow: 1, 
+                  overflow: 'auto',  // Changed to auto
+                  height: '100%',    // Added height 100%
+                  width: '100%'      // Added width 100%
+                }}>
+                  <TimerBoardView />
+                </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', borderRadius: '15px', padding: 2 , height: '100%',}}>
+            <Typography variant="h6" sx={{fontWeight: 'bold', color: '#1f295a'}}>   
                 Sticky Notes
             </Typography>
-
-
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              borderRadius: '15px',
+              height: 'calc(100% - 40px)', 
+              backgroundColor: 'white',
+              padding: 2,
+              overflow: 'hidden', // Added overflow hidden
+            }}
+          >
                 {/*Contents needed*/}
-
-
-
+                <Box sx={{ 
+                  flexGrow: 1, 
+                  overflow: 'auto',  // Changed to auto
+                  height: '100%',    // Added height 100%
+                  width: '100%'      // Added width 100%
+                }}>
+                  <NoteBoardView />
+                </Box>
 
           </Box>
         </Grid>
