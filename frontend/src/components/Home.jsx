@@ -25,7 +25,9 @@ import Notes from './StickyNotes';
 import Task from './Task';
 import TaskCalendar from './TaskCalendar';
 import Timer from './Timer';
-
+import Analytics from './Analytics'; 
+import UserIcon from '@mui/icons-material/Person';
+import Profile from './profile';
 
 const NAVIGATION = [
   {
@@ -76,11 +78,16 @@ function DemoPageContent({ activeSegment, user }) {
       break;
     case 'board':
       content = (
+        <Box sx={{width: '100%', padding: 0, margin: 0}}>
         <Typography variant="h3" paddingTop={5} color='#134B70'>
           Welcome to TaskSync Productivity!
           <Typography variant="h6">{greeting}</Typography> 
         </Typography>
-      ); // Placeholder for board content
+          <Box sx={{width: '100%', marginTop: 2, boxSizing: 'border-box', padding: 0}}>
+            <Analytics user={user} />
+          </Box>
+        </Box>
+      ); 
       break;
     default:
       content = <Typography variant="h6">Select a segment to view content.</Typography>;
@@ -96,7 +103,7 @@ function DemoPageContent({ activeSegment, user }) {
         flexGrow: 1,
         overflowY: 'hidden',
         minHeight: '100%',
-        width: '95%',
+        width: '100%',
       }}
     >
       {content}
@@ -275,36 +282,44 @@ function DashboardLayoutBranding() {
   };
 
   return (
-    <Box sx={{ display: 'flex', height: '100vh', backgroundColor: '#d6e1f7', overflow: 'hidden' }}>
+    <Box sx={{ display: 'flex', height: '100vh', backgroundColor: '#d6e1f7', overflow: 'hidden', width: '100%'}}>
       <Sidebar onNavigate={handleNavigation} activeSegment={activeSegment} />
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', padding: 3, justifyContent: 'space-between', marginTop: 1 }}>
 
-        <Typography 
-          variant="h4" 
-          sx={{ 
-            marginBottom: '16px', 
-            margin: '0 10px', 
-            fontWeight: 'bold', 
-            color: '#1f295a', // Set the text color
-            minWidth: '220px' // Set a minimum width to prevent movement
-          }}
-        >
-          {activeSegment.charAt(0).toUpperCase() + activeSegment.slice(1).replace('-', ' ')} {/* Display selected segment name */}
-        </Typography>
+      {/*  sa title  */}
+        <Box sx={{ display: 'flex', alignItems: 'center', padding: 2, justifyContent: 'space-between', marginTop: 1,  width: '95%'}}>
+          <Typography 
+            variant="h4" 
+            sx={{ 
+              marginBottom: '16px', 
+              margin: '0 10px', 
+              fontWeight: 'bold', 
+              color: '#1f295a', // Set the text color
+              minWidth: '220px' // Set a minimum width to prevent movement
+            }}
+          >
+            {activeSegment.charAt(0).toUpperCase() + activeSegment.slice(1).replace('-', ' ')} {/* Display selected segment name */}
+          </Typography>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, justifyContent: 'center', marginRight: 20 }}>
-
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Typography variant="body1" sx={{ marginRight: 2, marginLeft: 3, color: '#134B70'}}>
-              {new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })} {/* Display current date in "November 21, 2024" format */}
-            </Typography>
-            <CalendarTodayIcon sx={{ marginRight: 15, color: '#134B70'}} /> {/* Added marginLeft to create space between the calendar icon and the right arrow */}
+            {/* this part is calendar */}
+          <Box sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, justifyContent: 'center',}}>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Typography variant="body1" sx={{ marginRight: 2, marginLeft: 3, color: '#134B70'}}>
+                {new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })} 
+              </Typography>
+              <CalendarTodayIcon sx={{ marginRight: 15, color: '#134B70'}} /> 
+            </Box>
           </Box>
-          
 
+            {/* profile  */}
+
+          <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', }} onClick={() => navigate('/profile')}>
+            <UserIcon/> 
+            <Typography variant="body1" sx={{  }}>
+              {user ? user.username : 'Guest'}
+            </Typography>
+          </Box>
         </Box>
-      </Box>
 
         <Box sx={{ flexGrow: 1, overflow: 'auto' }}>
           <DemoPageContent activeSegment={activeSegment} user={user} />

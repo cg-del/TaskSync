@@ -9,7 +9,7 @@ import Notes from './components/StickyNotes';
 import Task from './components/Task';
 import Calendar from './components/TaskCalendar';
 import NotFound from './components/404';
-
+import Profile from './components/profile';
 
 import Timer from './components/Timer';
 import { UserProvider } from './UserContext';
@@ -29,6 +29,7 @@ function App() {
           <Route path="/Signup" element={<Signup />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/404" element={<NotFound />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </Router>
     </UserProvider>

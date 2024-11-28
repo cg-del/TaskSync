@@ -13,3 +13,23 @@ body {
     min-height: 100vh;
 }
 
+/* For WebKit browsers (Chrome, Safari) */
+::-webkit-scrollbar {
+    width: 15px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #d6e1f7;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #d6e1f7; 
+    border-radius: 15px;
+
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #1f295a; 
+
+  }
+  

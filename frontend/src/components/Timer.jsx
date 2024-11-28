@@ -223,10 +223,25 @@ const Timer = () => {
     }, 1000); // Decrease duration every second
   };
 
-  const pauseCountdown = (timerId) => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      setIsPlaying(false); // Set playing state to false
+  const pauseCountdown = async (timerId) => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+  
+    const timer = timers.find(timer => timer.timerId === timerId);
+    if (!timer) return;
+  
+    try {
+      await axios.put(`http://localhost:8080/api/timer/putTimer?id=${timerId}`, {
+        user: {
+          username: user.username,
+          email: user.email,
+          password: user.password, 
+          occupation: user.occupation,
+        },
+        duration: timer.duration,
+      });
+      console.log(`Timer with ID ${timerId} paused and updated in the database.`);
+    } catch (error) {
+      console.error('Error updating timer:', error.response ? error.response.data : error.message);
     }
   };
 
@@ -264,6 +279,7 @@ const Timer = () => {
         alignItems: 'center',
         justifyContent: 'center',
         userSelect: 'none', 
+        marginBottom: '16px',
       }}
     >
       {/* Large Timer Display */}
@@ -374,7 +390,7 @@ const Timer = () => {
                   </Typography>
                 </Box>
               </Grid>
-              <Grid item xs={12} md={6} alignItems="center" justifyContent="center"  sx={{ display: 'flex', flexDirection: 'row', justifyContent:'space-between',border: '1px solid #ddd', borderRadius: '15px', padding: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', backgroundColor: '#f3f3fa',}}>
+              <Grid item xs={12} md={6} alignItems="center" justifyContent="center"  sx={{ display: 'flex', flexDirection: 'row', justifyContent:'space-between',border: '1px solid #ddd', borderRadius: '15px', padding: 2, boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)', backgroundColor: 'white',}}>
                 <Box display="flex" gap={2} ml={3}>
                   <TextField
                     label="Hours"
@@ -472,7 +488,7 @@ const Timer = () => {
               </Grid>
             </Grid>
 
-            <List
+            <List 
               sx={{
                 marginTop: 2,
                 minHeight: '230px',
@@ -482,6 +498,7 @@ const Timer = () => {
                 backgroundColor: 'white',
                 boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                 border: '1px solid #ddd',
+                
               }}
             >
               {timers.map((timer) => {
@@ -502,41 +519,51 @@ const Timer = () => {
                       overflow: 'hidden',
                     }}
                   >
-                    <ListItemText
-                      primary={
-                        <Typography level="body1" sx={{fontWeight: 'bold'}}>
-                          {formatTime(timer.duration)}
-                        </Typography>
-                      }
-                    />
-                    {timer.timerId === playingTimerId && (
-                      <LinearProgress
-                        variant="determinate"
-                        value={progress}  
-                        sx={{
-                          width: '80%',
-                          height: 10,
-                          borderRadius: 5,
-                          '& .MuiLinearProgress-bar': {
-                            backgroundColor: '#1f295a',
-                          },
-                          '& .MuiLinearProgress-root': {
-                            backgroundColor: '#e0e0e0',
-                          },
-                        }}
+                    <Button
+                      onClick={() => startCountdown(timer.timerId)}
+                      sx={{
+                        width: '100%', 
+                        justifyContent: 'center', 
+                        color: '#4259c1',
+                        textAlign: 'left', 
+                        background: 'transparent',
+                        opacity: 1,
+                        transition: 'opacity 1s ease 0s',      
+                        '&:hover': {
+                          backgroundColor: 'rgba(66, 89, 193, 0)', // Change background on hover
+                        },
+                      }}
+                    >
+                      <ListItemText
+                        primary={
+                          <Typography level="body1" sx={{ fontWeight: 'bold', color: '#1f295a'}}>
+                            {formatTime(timer.duration)}
+                          </Typography>
+                        }
                       />
-                    )}
+                      {timer.timerId === playingTimerId && (
+                        <LinearProgress
+                          variant="determinate"
+                          value={progress}
+                          sx={{
+                            width: '93%',
+                            height: 10,
+                            borderRadius: 5,
+                            '& .MuiLinearProgress-bar': {
+                              backgroundColor: '#1f295a',
+                            },
+                            '& .MuiLinearProgress-root': {
+                              backgroundColor: 'white',
+                            },
+                          }}
+                        />
+                      )}
+                    </Button>
                     <IconButton sx={{ color: '#4259c1' }} onClick={() => handleEditTimer(timer)}>
                       <Edit />
                     </IconButton>
                     <IconButton sx={{ color: '#4259c1' }} onClick={() => { setTimerToDelete(timer.timerId); setOpen(true); }}>
                       <Delete />
-                    </IconButton>
-                    <IconButton sx={{ color: '#4259c1' }} onClick={() => startCountdown(timer.timerId)}>
-                      <PlayArrow />
-                    </IconButton>
-                    <IconButton sx={{ color: '#4259c1' }} onClick={() => pauseCountdown(timer.timerId)}>
-                      <Pause />
                     </IconButton>
                   </ListItem>
                 );
