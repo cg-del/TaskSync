@@ -224,7 +224,7 @@ export default function StickyNotes() {
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 0.3fr)', gap: 3, marginTop: 4 }}>
         {notes.map((note) => (
           <Box key={note.noteId} sx={{
-            backgroundColor: '#7ec9ed', //yellow //extra color #ffda33 ##ffeb3b ##89CFF0
+            backgroundColor: '#87ceeb', //yellow //extra color #ffda33 ##ffeb3b ##89CFF0
             padding: '40px 10px 10px',
             borderRadius: '0px 0 25px 0px',
             width: '250px',

@@ -87,7 +87,7 @@ export default function StickyNoteBoardView() {
           <Box
             key={note.noteId}
             sx={{
-              backgroundColor: '#7ec9ed',
+              backgroundColor: '#87ceeb',
               padding: '40px 15px 15px',
               borderRadius: '8px',
               position: 'relative',
