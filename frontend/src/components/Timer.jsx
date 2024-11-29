@@ -319,7 +319,6 @@ const Timer = () => {
               background: 'transparent', 
               border: 'none', 
               borderRadius: '50%',
-              cursor: isPlaying ? 'not-allowed' : 'pointer',
               padding: 0,
               marginRight: 2,
               '&:hover': {
@@ -512,7 +511,7 @@ const Timer = () => {
                       borderBottom: '1px solid #ddd',
                       backgroundColor: timer.timerId === playingTimerId ? 'rgba(101, 119, 197, 0.5)' : 'rgba(243, 243, 250, 0.5)', // Lowered opacity for #6577c5
                       '&:hover': {
-                        backgroundColor: 'rgba(101, 119, 197, .3)', // Adjust hover color if needed
+                        backgroundColor: 'rgba(101, 119, 197, .3)', 
                       },
                       borderRadius: '15px',
                       width: '100%',
@@ -520,7 +519,9 @@ const Timer = () => {
                     }}
                   >
                     <Button
-                      onClick={() => startCountdown(timer.timerId)}
+                      onClick={() => {
+                        setPlayingTimerId(timer.timerId); 
+                      }}
                       sx={{
                         width: '100%', 
                         justifyContent: 'center', 

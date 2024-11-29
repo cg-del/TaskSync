@@ -37,11 +37,11 @@ public class UserService {
 		try {
 			user = urepo.findById(userId).get();
 			
-			user.setTimers(newUserDetails.getTimers());
-			user.setStickyNotes(newUserDetails.getStickyNotes());
-			user.setTasks(newUserDetails.getTasks());
-			user.setAnalytics(newUserDetails.getAnalytics());
-			user.setDeadlineTasks(newUserDetails.getDeadlineTasks());
+			// user.setTimers(newUserDetails.getTimers());
+			// user.setStickyNotes(newUserDetails.getStickyNotes());
+			// user.setTasks(newUserDetails.getTasks());
+			// user.setAnalytics(newUserDetails.getAnalytics());
+			// user.setDeadlineTasks(newUserDetails.getDeadlineTasks());
 			
 			user.setUsername(newUserDetails.getUsername());
 			user.setEmail(newUserDetails.getEmail());
