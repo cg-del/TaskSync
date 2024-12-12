@@ -231,21 +231,40 @@ export default function Landing() {
           </Box>
         </Box>
       </Element>
-    {/* // Section 2 (Notes) */}
+
+  
       <Element name="section2">
         <Box
           sx={{
             height: "100vh",
-            marginBottom: 2,
             position: "relative",
-            background: "#D4EBF8",
+            marginBottom: 2,
+            background:'#D4EBF8',
             transition: "all 0.5s ease-in-out",
           }}
         >
+            <Grid container spacing={2} sx={{ height: '100%', position: 'relative', zIndex: 1 }}>
+              <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                <Box sx={{ position: 'absolute', background: '#1c329b', width: '100%', maxWidth: '600px', height: '350px', transform: 'translate(-40px, -30px)', borderRadius: '16px', opacity: 0.6 }}/>
+                <Box sx={{ position: 'relative' }}>
+                  <img src={todo} alt="Todo Demo" style={{ border: '5px solid black', borderRadius: '16px', width: '100%', maxWidth: '700px', height: 'auto', position: 'relative' }}/>
+                </Box>
+              </Grid>
+              <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Box sx={{ padding: 4 }}>
+                  <Typography variant="h3" sx={{ color: '#1c329b', mb: 2 }}>
+                    Todo list
+                  </Typography>
+                  <Typography variant="h5" sx={{ color: '#1c329b', mb: 4, width:'400px' }}>
+                    Organize your tasks efficiently with our intuitive todo list. Set priorities, deadlines, and track your progress.
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
           <Box
             sx={{
               position: "absolute",
-              zIndex: 2,
+              zIndex:2,
               bottom: 20,
               left: "50%",
               transform: "translateX(-50%)",
@@ -267,7 +286,7 @@ export default function Landing() {
           >
             <Typography
               sx={{
-                color: "#334596",
+                color: "#1c329b",
                 fontSize: "2rem",
                 userSelect: "none",
               }}
@@ -283,67 +302,6 @@ export default function Landing() {
               />
             </Typography>
           </Box>
-
-          <Grid
-            container
-            spacing={2}
-            sx={{ height: "100%", position: "relative", zIndex: 1 }}
-          >
-            <Grid item xs={12} md={6}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-                  <Box sx={{ padding: 4 }}>
-                  <Typography variant="h3" sx={{ color: '#1c329b', mb: 2 }}>
-                    Sticky Notes
-                  </Typography>
-                  <Typography variant="h5" sx={{ color: '#1c329b', mb: 4, width: '400px' }}>
-                    Quickly capture your thoughts and ideas with our digital sticky notes. Organize, color-code, and access your notes from anywhere.
-                  </Typography>
-                </Box>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              md={6}
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                position: "relative",
-              }}
-            >
-              <Box
-                sx={{
-                  position: "absolute",
-                  background: "#1c329b",
-                  width: "100%",
-                  maxWidth: "600px",
-                  height: "350px",
-                  transform: "translate(40px, 20px)",
-                  borderRadius: "16px",
-                  opacity: 0.6,
-                }}
-              />
-              <Box sx={{ position: "relative" }}>
-                <img
-                  src={notesGif}
-                  alt="Notes Demo"
-                  style={{
-                    border: "5px solid black",
-                    borderRadius: "16px",
-                    width: "100%",
-                    maxWidth: "800px",
-                    height: "auto",
-                    position: "relative",
-                  }}
-                />
-              </Box>
-            </Grid>
-          </Grid>
         </Box>
       </Element>
 
@@ -351,97 +309,25 @@ export default function Landing() {
         <Box
           sx={{
             height: "100vh",
-            marginBottom: 2,
             position: "relative",
+            marginBottom: 2,
             backgroundImage: "linear-gradient(45deg, #4259c1, #1f295a)",
             transition: "all 0.5s ease-in-out",
           }}
         >
           <Grid container spacing={2} sx={{ height: '100%', position: 'relative', zIndex: 1 }}>
-            <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-              <Box sx={{ position: 'absolute', background: '#d4ebf8', width: '100%', maxWidth: '600px', height: '350px', transform: 'translate(-40px, -40px)', borderRadius: '16px', opacity: 0.6 }}/>
-                <Box sx={{ position: 'relative' }}>
-                  <img src={timerGif} alt="Timer Demo" style={{ border: '5px solid black', borderRadius: '16px', width: '100%', maxWidth: '700px', height: 'auto', position: 'relative' }}/>
-                </Box>
-            </Grid>
             <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Box sx={{ padding: 4 }}>
                 <Typography variant="h3" sx={{ color: '#ffffff', mb: 2 }}>
-                  Focus Timer
-                </Typography>
-                <Typography variant="h5" sx={{ color: '#ffffff', mb: 4, width:'400px'}}>
-                  Stay productive with our customizable timer. Perfect for Pomodoro technique or any time management method.
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
-          <Box
-            sx={{
-              position: "absolute",
-              zIndex: 2,
-              bottom: 20,
-              left: "50%",
-              transform: "translateX(-50%)",
-              cursor: "pointer",
-              animation: "bounce 2s infinite",
-              "@keyframes bounce": {
-                "0%, 20%, 50%, 80%, 100%": {
-                  transform: "translateY(0) translateX(-50%)",
-                },
-                "40%": {
-                  transform: "translateY(-10px) translateX(-50%)",
-                },
-                "60%": {
-                  transform: "translateY(-10px) translateX(-50%)",
-                },
-              },
-            }}
-            onClick={() => scrollToNextSection("section4")}
-          >
-            <Typography
-              sx={{
-                color: "#eeeeee",
-                fontSize: "2rem",
-                userSelect: "none",
-              }}
-            >
-              <ArrowDropDownCircleIcon
-                sx={{
-                  opacity: 0.5,
-                  transition: "opacity 0.3s ease",
-                  "&:hover": {
-                    opacity: 1,
-                  },
-                }}
-              />
-            </Typography>
-          </Box>
-        </Box>
-      </Element>
-
-      <Element name="section4">
-        <Box
-          sx={{
-            height: "100vh",
-            marginBottom: 2,
-            position: "relative",
-            background: "#D4EBF8",
-            transition: "all 0.5s ease-in-out",
-          }}
-        >
-          <Grid container spacing={2} sx={{ height: '100%', position: 'relative', zIndex: 1 }}>
-            <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Box sx={{ padding: 4 }}>
-                <Typography variant="h3" sx={{ color: '#1c329b', mb: 2 }}>
                   Calendar
                 </Typography>
-                <Typography variant="h5" sx={{ color: '#1c329b', mb: 4, width: '400px' }}>
+                <Typography variant="h5" sx={{ color: '#ffffff', mb: 4, width: '400px' }}>
                   Keep track of your schedule and never miss important deadlines. Seamlessly integrate tasks with your calendar.
                 </Typography>
               </Box>
             </Grid>
             <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-              <Box sx={{ position: 'absolute', background: '#1c329b', width: '100%', maxWidth: '600px', height: '350px', transform: 'translate(40px, 20px)', borderRadius: '16px', opacity: 0.6 }}/>
+              <Box sx={{ position: 'absolute', background: '#d4ebf8', width: '100%', maxWidth: '600px', height: '350px', transform: 'translate(40px, 20px)', borderRadius: '16px', opacity: 0.6 }}/>
               <Box sx={{ position: 'relative' }}>
                 <img src={calendarGif} alt="Calendar Demo" style={{ border: '5px solid black', borderRadius: '16px', width: '100%', maxWidth: '700px', height: 'auto', position: 'relative' }}/>
               </Box>
@@ -469,11 +355,11 @@ export default function Landing() {
                 },
               },
             }}
-            onClick={() => scrollToNextSection("section5")}
+            onClick={() => scrollToNextSection("section4")}
           >
             <Typography
               sx={{
-                color: "#334596",
+                color: "#ffffff",
                 fontSize: "2rem",
                 userSelect: "none",
               }}
@@ -492,37 +378,40 @@ export default function Landing() {
         </Box>
       </Element>
 
-      <Element name="section5">
+
+
+      <Element name="section4">
         <Box
           sx={{
             height: "100vh",
+            marginBottom: 2,
             position: "relative",
-            backgroundImage: "linear-gradient(45deg, #4259c1, #1f295a)",
+            background:'#d4ebf8',
             transition: "all 0.5s ease-in-out",
           }}
         >
-            <Grid container spacing={2} sx={{ height: '100%', position: 'relative', zIndex: 1 }}>
-              <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                <Box sx={{ position: 'absolute', background: '#d4ebf8', width: '100%', maxWidth: '600px', height: '350px', transform: 'translate(-40px, -40px)', borderRadius: '16px', opacity: 0.6 }}/>
+          <Grid container spacing={2} sx={{ height: '100%', position: 'relative', zIndex: 1 }}>
+            <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+              <Box sx={{ position: 'absolute', background: '#1c329b', width: '100%', maxWidth: '600px', height: '350px', transform: 'translate(-40px, -30px)', borderRadius: '16px', opacity: 0.6 }}/>
                 <Box sx={{ position: 'relative' }}>
-                  <img src={todo} alt="Todo Demo" style={{ border: '5px solid black', borderRadius: '16px', width: '100%', maxWidth: '700px', height: 'auto', position: 'relative' }}/>
+                  <img src={timerGif} alt="Timer Demo" style={{ border: '5px solid black', borderRadius: '16px', width: '100%', maxWidth: '700px', height: 'auto', position: 'relative' }}/>
                 </Box>
-              </Grid>
-              <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Box sx={{ padding: 4 }}>
-                  <Typography variant="h3" sx={{ color: '#ffffff', mb: 2 }}>
-                    Todo list
-                  </Typography>
-                  <Typography variant="h5" sx={{ color: '#ffffff', mb: 4, width:'400px' }}>
-                    Organize your tasks efficiently with our intuitive todo list. Set priorities, deadlines, and track your progress.
-                  </Typography>
-                </Box>
-              </Grid>
             </Grid>
+            <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Box sx={{ padding: 4 }}>
+                <Typography variant="h3" sx={{ color: '#1c329b', mb: 2 }}>
+                  Focus Timer
+                </Typography>
+                <Typography variant="h5" sx={{ color: '#1c329b', mb: 4, width:'400px'}}>
+                  Stay productive with our customizable timer. Perfect for Pomodoro technique or any time management method.
+                </Typography>
+              </Box>
+            </Grid>
+          </Grid>
           <Box
             sx={{
               position: "absolute",
-              zIndex:2,
+              zIndex: 2,
               bottom: 20,
               left: "50%",
               transform: "translateX(-50%)",
@@ -540,11 +429,11 @@ export default function Landing() {
                 },
               },
             }}
-            onClick={() => scrollToNextSection("section6")}
+            onClick={() => scrollToNextSection("section5")}
           >
             <Typography
               sx={{
-                color: "#eeeeee",
+                color: "#1c329b",
                 fontSize: "2rem",
                 userSelect: "none",
               }}
@@ -562,6 +451,121 @@ export default function Landing() {
           </Box>
         </Box>
       </Element>
+
+    <Element name="section5">
+      <Box
+        sx={{
+          height: "100vh",
+          position: "relative",
+          backgroundImage: "linear-gradient(45deg, #4259c1, #1f295a)",
+          transition: "all 0.5s ease-in-out",
+        }}
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            zIndex: 2,
+            bottom: 20,
+            left: "50%",
+            transform: "translateX(-50%)",
+            cursor: "pointer",
+            animation: "bounce 2s infinite",
+            "@keyframes bounce": {
+              "0%, 20%, 50%, 80%, 100%": {
+                transform: "translateY(0) translateX(-50%)",
+              },
+              "40%": {
+                transform: "translateY(-10px) translateX(-50%)",
+              },
+              "60%": {
+                transform: "translateY(-10px) translateX(-50%)",
+              },
+            },
+          }}
+          onClick={() => scrollToNextSection("section6")}
+        >
+          <Typography
+            sx={{
+              color: "#eeeeee",
+              fontSize: "2rem",
+              userSelect: "none",
+            }}
+          >
+            <ArrowDropDownCircleIcon
+              sx={{
+                opacity: 0.5,
+                transition: "opacity 0.3s ease",
+                "&:hover": {
+                  opacity: 1,
+                },
+              }}
+            />
+          </Typography>
+        </Box>
+
+        <Grid
+          container
+          spacing={2}
+          sx={{ height: "100%", position: "relative", zIndex: 1 }}
+        >
+          <Grid item xs={12} md={6}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+                <Box sx={{ padding: 4 }}>
+                <Typography variant="h3" sx={{ color: '#ffffff', mb: 2 }}>
+                  Notes
+                </Typography>
+                <Typography variant="h5" sx={{ color: '#ffffff', mb: 4, width: '400px' }}>
+                  Quickly capture your thoughts and ideas with our digital sticky notes. Organize, color-code, and access your notes from anywhere.
+                </Typography>
+              </Box>
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            md={6}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "relative",
+            }}
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                background: "#d4ebf8",
+                width: "100%",
+                maxWidth: "600px",
+                height: "350px",
+                transform: "translate(40px, 20px)",
+                borderRadius: "16px",
+                opacity: 0.6,
+              }}
+            />
+            <Box sx={{ position: "relative" }}>
+              <img
+                src={notesGif}
+                alt="Notes Demo"
+                style={{
+                  border: "5px solid black",
+                  borderRadius: "16px",
+                  width: "100%",
+                  maxWidth: "800px",
+                  height: "auto",
+                  position: "relative",
+                }}
+              />
+            </Box>
+          </Grid>
+        </Grid>
+      </Box>
+    </Element>
+
 
       <Element name="section6">
         <Box 

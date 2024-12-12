@@ -90,7 +90,6 @@ export default function StickyNoteBoardView() {
               backgroundColor: '#87ceeb',
               padding: '25px 15px 15px',
               borderRadius: '8px',
-              position: 'relative',
               minHeight: '110px',
               width: '250px',
               position: 'relative',
@@ -122,7 +121,7 @@ export default function StickyNoteBoardView() {
                   lineHeight: 1.5,
                   WebkitLineClamp: 5, // Limit the number of lines displayed (adjust as needed)
                   WebkitBoxOrient: 'vertical', // Set the box orientation to vertical
-                  paddingRight: '10px',
+                  paddingRight: '18px',
                 }}
               >
                 {note.content}

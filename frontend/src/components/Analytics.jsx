@@ -213,7 +213,7 @@ const HorizontalScrollBox = () => {
         {/* Sticky Notes Section */}
         <Grid item xs={12} md={3} sx={{ display: 'flex', flexDirection: 'column', borderRadius: '15px', padding: 2, height: '100%' }}>
           <Typography variant="h6" sx={{fontWeight: 'bold', color: '#1f295a'}}>   
-            Sticky Notes
+            Notes
           </Typography>
           <Box
             sx={{
